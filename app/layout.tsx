@@ -7,9 +7,8 @@ import { playfair } from "./fonts"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Internal Auditor Dashboard",
-  description: "Dashboard for internal auditors",
-    generator: 'v0.dev'
+  title: "CYQ Dashboard",
+  description: "Dashboard for CYQ",
 }
 
 export default function RootLayout({
