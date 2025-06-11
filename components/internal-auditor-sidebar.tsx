@@ -32,6 +32,7 @@ import {
   ChevronUp,
   Menu,
   X,
+  Settings,
 } from "lucide-react"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { cn } from "@/lib/utils"
@@ -56,7 +57,10 @@ export function InternalAuditorSidebar() {
   useEffect(() => {
     const newOpenSections = { ...openSections }
     
-    if (pathname.includes('/my-account') || pathname.includes('/password-security')) {
+    if (pathname.includes('/my-account')) {
+      newOpenSections.personal = true
+    }
+    if (pathname.includes('/settings')) {
       newOpenSections.personal = true
     }
     if (pathname.includes('/regulatory-exposure')) {
@@ -170,180 +174,156 @@ export function InternalAuditorSidebar() {
                 <div className="pl-6 space-y-1.5 pt-1.5" onClick={(e) => e.stopPropagation()}>
                   <SidebarItem
                     icon={User}
-                    label="My Account"
+                    label="My Profile"
                     href="/dashboard/internal-auditor/my-account"
                     collapsed={collapsed}
                     isActive={pathname === "/dashboard/internal-auditor/my-account"}
                   />
                   <SidebarItem
-                    icon={Lock}
-                    label="Password Security"
-                    href="/dashboard/internal-auditor/password-security"
+                    icon={Settings}
+                    label="Settings"
+                    href="/dashboard/internal-auditor/settings"
                     collapsed={collapsed}
-                    isActive={pathname === "/dashboard/internal-auditor/password-security"}
+                    isActive={pathname === "/dashboard/internal-auditor/settings"}
                   />
                 </div>
               </CollapsibleContent>
             </Collapsible>
 
-            {/* My Dashboard */}
-            <Collapsible 
-              open={openSections.myDashboard}
-              onOpenChange={(open) => {
-                setOpenSections(prev => ({ ...prev, myDashboard: open }))
-              }}
-            >
-              <CollapsibleTrigger
-                onClick={(e) => toggleSection("myDashboard", e)}
-                className={cn(
-                  "flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium",
-                  "text-white/90 hover:bg-white/10 hover:text-white transition-all duration-200",
-                  openSections.myDashboard && "bg-white/10 text-white",
-                )}
-              >
-                <div className="flex items-center">
-                  <Home className="h-4 w-4 mr-3" />
-                  {!collapsed && <span>My Dashboard</span>}
-                </div>
-                {!collapsed &&
-                  (openSections.myDashboard ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />)}
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <div className="pl-6 space-y-1.5 pt-1.5" onClick={(e) => e.stopPropagation()}>
-                  <SidebarItem
-                    icon={Home}
-                    label="Dashboard Home"
-                    href="/dashboard/internal-auditor"
-                    collapsed={collapsed}
-                    isActive={pathname === "/dashboard/internal-auditor"}
-                  />
-
-                  {/* Regulatory Exposure - Nested */}
-                  <Collapsible 
-                    open={openSections.regulatory}
-                    onOpenChange={(open) => {
-                      setOpenSections(prev => ({ ...prev, regulatory: open }))
-                    }}
-                  >
-                    <CollapsibleTrigger
-                      onClick={(e) => toggleSection("regulatory", e)}
-                      className={cn(
-                        "flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium",
-                        "text-white/90 hover:bg-white/10 hover:text-white transition-all duration-200",
-                        openSections.regulatory && "bg-white/10 text-white",
-                      )}
-                    >
-                      <div className="flex items-center">
-                        <AlertTriangle className="h-4 w-4 mr-3" />
-                        {!collapsed && <span>Regulatory Exposure</span>}
-                      </div>
-                      {!collapsed &&
-                        (openSections.regulatory ? (
-                          <ChevronUp className="h-4 w-4" />
-                        ) : (
-                          <ChevronDown className="h-4 w-4" />
-                        ))}
-                    </CollapsibleTrigger>
-                    <CollapsibleContent>
-                      <div className="pl-6 space-y-1.5 pt-1.5" onClick={(e) => e.stopPropagation()}>
-                        <SidebarItem
-                          icon={FileText}
-                          label="Findings"
-                          href="/dashboard/internal-auditor/regulatory-exposure/findings"
-                          collapsed={collapsed}
-                          isActive={pathname === "/dashboard/internal-auditor/regulatory-exposure/findings"}
-                        />
-                        <SidebarItem
-                          icon={BarChart}
-                          label="Risks"
-                          href="/dashboard/internal-auditor/regulatory-exposure/risks"
-                          collapsed={collapsed}
-                          isActive={pathname === "/dashboard/internal-auditor/regulatory-exposure/risks"}
-                        />
-                        <SidebarItem
-                          icon={BarChart}
-                          label="Impacts"
-                          href="/dashboard/internal-auditor/regulatory-exposure/impacts"
-                          collapsed={collapsed}
-                          isActive={pathname === "/dashboard/internal-auditor/regulatory-exposure/impacts"}
-                        />
-                        <SidebarItem
-                          icon={FileSearch}
-                          label="Compliance Mapping"
-                          href="/dashboard/internal-auditor/regulatory-exposure/compliance-mapping"
-                          collapsed={collapsed}
-                          isActive={pathname === "/dashboard/internal-auditor/regulatory-exposure/compliance-mapping"}
-                        />
-                      </div>
-                    </CollapsibleContent>
-                  </Collapsible>
-
-                  {/* Compliance Maturity - Nested */}
-                  <Collapsible open={openSections.compliance}>
-                    <CollapsibleTrigger
-                      onClick={() => toggleSection("compliance")}
-                      className={cn(
-                        "flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium",
-                        "text-white/90 hover:bg-white/10 hover:text-white transition-all duration-200",
-                        openSections.compliance && "bg-white/10 text-white",
-                      )}
-                    >
-                      <div className="flex items-center">
-                        <BarChart className="h-4 w-4 mr-3" />
-                        {!collapsed && <span>Compliance Maturity</span>}
-                      </div>
-                      {!collapsed &&
-                        (openSections.compliance ? (
-                          <ChevronUp className="h-4 w-4" />
-                        ) : (
-                          <ChevronDown className="h-4 w-4" />
-                        ))}
-                    </CollapsibleTrigger>
-                    <CollapsibleContent>
-                      <div className="pl-6 space-y-1.5 pt-1.5">
-                        <SidebarItem
-                          icon={Shield}
-                          label="ISO 2700"
-                          href="/dashboard/internal-auditor/compliance-maturity/iso-2700"
-                          collapsed={collapsed}
-                          isActive={pathname === "/dashboard/internal-auditor/compliance-maturity/iso-2700"}
-                        />
-                        <SidebarItem
-                          icon={Shield}
-                          label="NIST"
-                          href="/dashboard/internal-auditor/compliance-maturity/nist"
-                          collapsed={collapsed}
-                          isActive={pathname === "/dashboard/internal-auditor/compliance-maturity/nist"}
-                        />
-                        <SidebarItem
-                          icon={Shield}
-                          label="CIS"
-                          href="/dashboard/internal-auditor/compliance-maturity/cis"
-                          collapsed={collapsed}
-                          isActive={pathname === "/dashboard/internal-auditor/compliance-maturity/cis"}
-                        />
-                        <SidebarItem
-                          icon={Shield}
-                          label="SEBI"
-                          href="/dashboard/internal-auditor/compliance-maturity/sebi"
-                          collapsed={collapsed}
-                          isActive={pathname === "/dashboard/internal-auditor/compliance-maturity/sebi"}
-                        />
-                      </div>
-                    </CollapsibleContent>
-                  </Collapsible>
-                </div>
-              </CollapsibleContent>
-            </Collapsible>
-
-            {/* Posture Maturity */}
+            {/* Dashboard - Simplified to direct link */}
             <SidebarItem
-              icon={PieChart}
+              icon={Home}
+              label="My Dashboard"
+              href="/dashboard/internal-auditor"
+              collapsed={collapsed}
+              isActive={pathname === "/dashboard/internal-auditor"}
+              className="mt-1"
+            />
+
+            {/* Posture Maturity - Direct Link */}
+            <SidebarItem
+              icon={Shield}
               label="Posture Maturity"
               href="/dashboard/internal-auditor/posture-maturity"
               collapsed={collapsed}
               isActive={pathname === "/dashboard/internal-auditor/posture-maturity"}
+              className="mt-1"
             />
+
+            {/* Regulatory Exposure - Nested */}
+            <Collapsible 
+              open={openSections.regulatory}
+              onOpenChange={(open) => {
+                setOpenSections(prev => ({ ...prev, regulatory: open }))
+              }}
+            >
+              <CollapsibleTrigger
+                onClick={(e) => toggleSection("regulatory", e)}
+                className={cn(
+                  "flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium",
+                  "text-white/90 hover:bg-white/10 hover:text-white transition-all duration-200",
+                  openSections.regulatory && "bg-white/10 text-white",
+                )}
+              >
+                <div className="flex items-center">
+                  <AlertTriangle className="h-4 w-4 mr-3" />
+                  {!collapsed && <span>Regulatory Exposure</span>}
+                </div>
+                {!collapsed &&
+                  (openSections.regulatory ? (
+                    <ChevronUp className="h-4 w-4" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4" />
+                  ))}
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <div className="pl-6 space-y-1.5 pt-1.5" onClick={(e) => e.stopPropagation()}>
+                  <SidebarItem
+                    icon={FileText}
+                    label="Findings"
+                    href="/dashboard/internal-auditor/regulatory-exposure/findings"
+                    collapsed={collapsed}
+                    isActive={pathname === "/dashboard/internal-auditor/regulatory-exposure/findings"}
+                  />
+                  <SidebarItem
+                    icon={BarChart}
+                    label="Risks"
+                    href="/dashboard/internal-auditor/regulatory-exposure/risks"
+                    collapsed={collapsed}
+                    isActive={pathname === "/dashboard/internal-auditor/regulatory-exposure/risks"}
+                  />
+                  <SidebarItem
+                    icon={BarChart}
+                    label="Impacts"
+                    href="/dashboard/internal-auditor/regulatory-exposure/impacts"
+                    collapsed={collapsed}
+                    isActive={pathname === "/dashboard/internal-auditor/regulatory-exposure/impacts"}
+                  />
+                  <SidebarItem
+                    icon={FileSearch}
+                    label="Compliance Mapping"
+                    href="/dashboard/internal-auditor/regulatory-exposure/compliance-mapping"
+                    collapsed={collapsed}
+                    isActive={pathname === "/dashboard/internal-auditor/regulatory-exposure/compliance-mapping"}
+                  />
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
+
+            {/* Compliance Maturity - Nested */}
+            <Collapsible open={openSections.compliance}>
+              <CollapsibleTrigger
+                onClick={() => toggleSection("compliance")}
+                className={cn(
+                  "flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium",
+                  "text-white/90 hover:bg-white/10 hover:text-white transition-all duration-200",
+                  openSections.compliance && "bg-white/10 text-white",
+                )}
+              >
+                <div className="flex items-center">
+                  <BarChart className="h-4 w-4 mr-3" />
+                  {!collapsed && <span>Compliance Maturity</span>}
+                </div>
+                {!collapsed &&
+                  (openSections.compliance ? (
+                    <ChevronUp className="h-4 w-4" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4" />
+                  ))}
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <div className="pl-6 space-y-1.5 pt-1.5">
+                  <SidebarItem
+                    icon={Shield}
+                    label="ISO 2700"
+                    href="/dashboard/internal-auditor/compliance-maturity/iso-2700"
+                    collapsed={collapsed}
+                    isActive={pathname === "/dashboard/internal-auditor/compliance-maturity/iso-2700"}
+                  />
+                  <SidebarItem
+                    icon={Shield}
+                    label="NIST"
+                    href="/dashboard/internal-auditor/compliance-maturity/nist"
+                    collapsed={collapsed}
+                    isActive={pathname === "/dashboard/internal-auditor/compliance-maturity/nist"}
+                  />
+                  <SidebarItem
+                    icon={Shield}
+                    label="CIS"
+                    href="/dashboard/internal-auditor/compliance-maturity/cis"
+                    collapsed={collapsed}
+                    isActive={pathname === "/dashboard/internal-auditor/compliance-maturity/cis"}
+                  />
+                  <SidebarItem
+                    icon={Shield}
+                    label="SEBI"
+                    href="/dashboard/internal-auditor/compliance-maturity/sebi"
+                    collapsed={collapsed}
+                    isActive={pathname === "/dashboard/internal-auditor/compliance-maturity/sebi"}
+                  />
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
 
             {/* Overview */}
             <Collapsible open={openSections.overview}>
