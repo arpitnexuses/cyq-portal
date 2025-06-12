@@ -1,3 +1,5 @@
+"use client"
+
 import { Badge } from "@/components/ui/badge"
 import { InternalAuditorSidebar } from "@/components/internal-auditor-sidebar"
 import { Button } from "@/components/ui/button"
@@ -5,9 +7,48 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Upload, Download, FileText, Plus, Calendar, CheckCircle } from "lucide-react"
+import { 
+  Upload, 
+  Download, 
+  FileText, 
+  Plus, 
+  Calendar, 
+  CheckCircle,
+  ChevronLeft,
+  ChevronRight,
+  X
+} from "lucide-react"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose
+} from "@/components/ui/dialog"
+import { Calendar as CalendarComponent } from "@/components/ui/calendar"
+import { format } from "date-fns"
+import { useState } from "react"
 
 export default function AuditPlanPage() {
+  const [startDate, setStartDate] = useState<Date>()
+  const [endDate, setEndDate] = useState<Date>()
+  const [showNewAuditDialog, setShowNewAuditDialog] = useState(false)
+
   return (
     <div className="flex min-h-screen bg-slate-50">
       <InternalAuditorSidebar />
@@ -18,84 +59,13 @@ export default function AuditPlanPage() {
               <h1 className="text-3xl font-bold tracking-tight">Audit Plan</h1>
               <p className="text-muted-foreground">Create and manage audit plans</p>
             </div>
-            <div className="flex items-center gap-4">
-              <Button variant="outline">
-                <Download className="h-4 w-4 mr-2" />
-                Download Template
-              </Button>
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                New Audit Plan
-              </Button>
-            </div>
           </div>
 
-          {/* Create Audit Plan */}
+          {/* Existing Audit Plans Summary */}
           <Card className="mb-6">
             <CardHeader>
-              <CardTitle>Create Audit Plan</CardTitle>
-              <CardDescription>Define the scope, objectives, and timeline for your audit</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="audit-name">Audit Name</Label>
-                  <Input id="audit-name" placeholder="e.g., Annual IT Security Audit 2025" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="audit-type">Audit Type</Label>
-                  <Input id="audit-type" placeholder="e.g., Compliance, Operational, Financial" />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="audit-objective">Audit Objective</Label>
-                <Textarea
-                  id="audit-objective"
-                  placeholder="Describe the purpose and objectives of this audit"
-                  rows={3}
-                />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="start-date">Start Date</Label>
-                  <Input id="start-date" type="date" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="end-date">End Date</Label>
-                  <Input id="end-date" type="date" />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="audit-scope">Audit Scope</Label>
-                <Textarea id="audit-scope" placeholder="Define what is included and excluded from the audit" rows={3} />
-              </div>
-
-              <div className="space-y-2">
-                <Label>Upload Audit Plan Document</Label>
-                <div className="border-2 border-dashed rounded-md p-6 flex flex-col items-center justify-center">
-                  <Upload className="h-8 w-8 text-muted-foreground mb-2" />
-                  <p className="text-sm text-muted-foreground mb-1">Drag and drop your file here or click to browse</p>
-                  <p className="text-xs text-muted-foreground">Supports PDF, DOCX, XLSX (Max 10MB)</p>
-                  <Button variant="outline" size="sm" className="mt-4">
-                    Select File
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter className="flex justify-between">
-              <Button variant="outline">Save as Draft</Button>
-              <Button>Submit for Approval</Button>
-            </CardFooter>
-          </Card>
-
-          {/* Existing Audit Plans */}
-          <Card>
-            <CardHeader>
               <CardTitle>Existing Audit Plans</CardTitle>
-              <CardDescription>View and manage your audit plans</CardDescription>
+              <CardDescription>Summary of all audit plans</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -153,13 +123,168 @@ export default function AuditPlanPage() {
                         View
                       </Button>
                       <Button variant="ghost" size="sm">
-                        Edit
+                        Download
                       </Button>
                     </div>
                   </div>
                 ))}
               </div>
             </CardContent>
+            <CardFooter>
+              <Dialog open={showNewAuditDialog} onOpenChange={setShowNewAuditDialog}>
+                <DialogTrigger asChild>
+                  <Button className="ml-auto">
+                    <Plus className="h-4 w-4 mr-2" />
+                    New Audit Plan
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[600px]">
+                  <DialogHeader>
+                    <DialogTitle>Create New Audit Plan</DialogTitle>
+                    <DialogDescription>
+                      Define the scope, objectives, and timeline for your audit
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4 py-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="audit-type">Audit Type</Label>
+                        <Select>
+                          <SelectTrigger id="audit-type">
+                            <SelectValue placeholder="Select audit type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="iso27001">ISO 27001</SelectItem>
+                            <SelectItem value="sebi">SEBI</SelectItem>
+                            <SelectItem value="nist">NIST</SelectItem>
+                            <SelectItem value="cis">CIS</SelectItem>
+                            <SelectItem value="posture">Posture Maturity</SelectItem>
+                            <SelectItem value="gap">Gap Assessment</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="audit-objective">Audit Objective</Label>
+                        <Select>
+                          <SelectTrigger id="audit-objective">
+                            <SelectValue placeholder="Select objective" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="compliance">Compliance Assessment</SelectItem>
+                            <SelectItem value="security">Security Evaluation</SelectItem>
+                            <SelectItem value="risk">Risk Assessment</SelectItem>
+                            <SelectItem value="process">Process Improvement</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Audit Period</Label>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="start-date" className="text-xs text-muted-foreground mb-1 block">Start Date</Label>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant={"outline"}
+                                className="w-full justify-start text-left font-normal"
+                              >
+                                <Calendar className="mr-2 h-4 w-4" />
+                                {startDate ? format(startDate, "PPP") : <span>Select date</span>}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0">
+                              <CalendarComponent
+                                mode="single"
+                                selected={startDate}
+                                onSelect={setStartDate}
+                                initialFocus
+                                classNames={{
+                                  table: "w-full border-collapse space-y-1",
+                                  head_row: "grid grid-cols-7 gap-0",
+                                  head_cell: "text-muted-foreground text-center text-xs font-medium h-9 w-9 flex items-center justify-center",
+                                  row: "grid grid-cols-7 gap-0",
+                                  cell: "h-9 w-9 text-center text-sm p-0 relative flex items-center justify-center",
+                                  day: "h-8 w-8 p-0 font-normal aria-selected:opacity-100 hover:bg-primary/10 rounded-full"
+                                }}
+                              />
+                            </PopoverContent>
+                          </Popover>
+                        </div>
+                        <div>
+                          <Label htmlFor="end-date" className="text-xs text-muted-foreground mb-1 block">End Date</Label>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant={"outline"}
+                                className="w-full justify-start text-left font-normal"
+                              >
+                                <Calendar className="mr-2 h-4 w-4" />
+                                {endDate ? format(endDate, "PPP") : <span>Select date</span>}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0">
+                              <CalendarComponent
+                                mode="single"
+                                selected={endDate}
+                                onSelect={setEndDate}
+                                initialFocus
+                                classNames={{
+                                  table: "w-full border-collapse space-y-1",
+                                  head_row: "grid grid-cols-7 gap-0",
+                                  head_cell: "text-muted-foreground text-center text-xs font-medium h-9 w-9 flex items-center justify-center",
+                                  row: "grid grid-cols-7 gap-0",
+                                  cell: "h-9 w-9 text-center text-sm p-0 relative flex items-center justify-center",
+                                  day: "h-8 w-8 p-0 font-normal aria-selected:opacity-100 hover:bg-primary/10 rounded-full"
+                                }}
+                              />
+                            </PopoverContent>
+                          </Popover>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="audit-scope">Audit Scope</Label>
+                      <Select>
+                        <SelectTrigger id="audit-scope">
+                          <SelectValue placeholder="Select scope" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="department">IT Department</SelectItem>
+                          <SelectItem value="location">Mumbai Office</SelectItem>
+                          <SelectItem value="process">Trading Process</SelectItem>
+                          <SelectItem value="custom">Custom Scope</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="approval-method">Approval Method</Label>
+                      <Select>
+                        <SelectTrigger id="approval-method">
+                          <SelectValue placeholder="Select approval method" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="self-authorized">I'm Authorized</SelectItem>
+                          <SelectItem value="upload-approval">Upload Approval</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button variant="outline">Cancel</Button>
+                    </DialogClose>
+                    <div className="flex gap-2">
+                      <Button variant="outline">Save as Draft</Button>
+                      <Button type="submit">Submit for Approval</Button>
+                    </div>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </CardFooter>
           </Card>
         </main>
       </div>

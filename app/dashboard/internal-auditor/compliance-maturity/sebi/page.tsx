@@ -5,8 +5,21 @@ import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Download, CheckCircle, XCircle, AlertCircle } from "lucide-react"
+import { ComplianceMaturityRadarChart } from "@/components/radar-chart"
 
-export default function SEBIPage() {
+// Demo data for the radar chart
+const radarData = [
+  { subject: 'Cyber Security', score: 3.9, fullMark: 5 },
+  { subject: 'Risk Management', score: 4.1, fullMark: 5 },
+  { subject: 'Data Protection', score: 3.5, fullMark: 5 },
+  { subject: 'Business Continuity', score: 3.7, fullMark: 5 },
+  { subject: 'Access Controls', score: 4.0, fullMark: 5 },
+  { subject: 'Threat Management', score: 3.3, fullMark: 5 },
+  { subject: 'Governance', score: 3.8, fullMark: 5 },
+  { subject: 'Third Party Risk', score: 3.2, fullMark: 5 },
+]
+
+export default function SEBIAuditorView() {
   return (
     <div className="flex min-h-screen bg-slate-50">
       <InternalAuditorSidebar />
@@ -14,8 +27,8 @@ export default function SEBIPage() {
         <main className="flex-1 p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-3xl font-bold tracking-tight">SEBI Guidelines</h1>
-              <p className="text-muted-foreground">Securities and Exchange Board of India compliance</p>
+              <h1 className="text-3xl font-bold tracking-tight">SEBI Compliance</h1>
+              <p className="text-muted-foreground">HoD View / Auditor View</p>
             </div>
             <div className="flex items-center gap-4">
               <Button variant="outline">
@@ -26,53 +39,181 @@ export default function SEBIPage() {
             </div>
           </div>
 
-          {/* Overall Compliance Score */}
+          {/* Overall Maturity Score */}
           <Card className="mb-6">
             <CardHeader>
-              <CardTitle>Overall Compliance Score</CardTitle>
-              <CardDescription>Based on the latest assessment</CardDescription>
+              <CardTitle>Overall Maturity Score</CardTitle>
+              <CardDescription>Radar / Spider Chart View</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium">91% Compliant</span>
-                <span className="text-sm font-medium">Target: 95%</span>
+              <div className="w-full">
+                <ComplianceMaturityRadarChart data={radarData} height={280} />
               </div>
-              <Progress value={91} className="h-3" />
-              <div className="grid grid-cols-3 gap-4 mt-6">
+            </CardContent>
+          </Card>
+
+          {/* Band showing Count */}
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle>Compliance Status</CardTitle>
+              <CardDescription>Count of Compliant | Observation | Non-Conformance</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-3 gap-4">
                 <div className="flex flex-col items-center p-4 bg-green-50 rounded-lg">
                   <CheckCircle className="h-8 w-8 text-green-500 mb-2" />
-                  <span className="text-xl font-bold">28</span>
-                  <span className="text-sm text-muted-foreground">Controls Compliant</span>
+                  <span className="text-xl font-bold">64</span>
+                  <span className="text-sm text-muted-foreground">Compliant</span>
                 </div>
                 <div className="flex flex-col items-center p-4 bg-amber-50 rounded-lg">
                   <AlertCircle className="h-8 w-8 text-amber-500 mb-2" />
-                  <span className="text-xl font-bold">2</span>
-                  <span className="text-sm text-muted-foreground">Partially Compliant</span>
+                  <span className="text-xl font-bold">8</span>
+                  <span className="text-sm text-muted-foreground">Observation</span>
                 </div>
                 <div className="flex flex-col items-center p-4 bg-red-50 rounded-lg">
                   <XCircle className="h-8 w-8 text-red-500 mb-2" />
-                  <span className="text-xl font-bold">1</span>
-                  <span className="text-sm text-muted-foreground">Non-Compliant</span>
+                  <span className="text-xl font-bold">3</span>
+                  <span className="text-sm text-muted-foreground">Non-Conformance</span>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Tabs defaultValue="categories">
+          {/* Overall Findings */}
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle>Overall Findings</CardTitle>
+              <CardDescription>Summary of audit findings</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-medium">Audit Plan</h3>
+                  <Badge variant="outline">Q3 2023</Badge>
+                </div>
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="border rounded-lg p-3">
+                    <h4 className="text-sm font-medium">Count of Findings</h4>
+                    <p className="text-2xl font-bold mt-1">19</p>
+                  </div>
+                  <div className="border rounded-lg p-3">
+                    <h4 className="text-sm font-medium">Critical Findings</h4>
+                    <p className="text-2xl font-bold mt-1 text-red-600">2</p>
+                  </div>
+                  <div className="border rounded-lg p-3">
+                    <h4 className="text-sm font-medium">Status</h4>
+                    <div className="flex items-center mt-1">
+                      <div className="w-full bg-gray-200 rounded-full h-2.5">
+                        <div className="bg-green-600 h-2.5 rounded-full" style={{ width: "52%" }}></div>
+                      </div>
+                      <span className="ml-2 text-sm">52%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Tabs defaultValue="findings">
             <TabsList>
+              <TabsTrigger value="findings">Findings View</TabsTrigger>
               <TabsTrigger value="categories">Categories</TabsTrigger>
-              <TabsTrigger value="requirements">Requirements</TabsTrigger>
-              <TabsTrigger value="circulars">Circulars</TabsTrigger>
-              <TabsTrigger value="history">Assessment History</TabsTrigger>
+              <TabsTrigger value="status">Status</TabsTrigger>
             </TabsList>
-            <TabsContent value="categories" className="space-y-4 mt-6">
+            
+            <TabsContent value="findings" className="mt-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>SEBI Compliance Categories</CardTitle>
+                  <CardTitle>Findings Detail</CardTitle>
+                  <CardDescription>Detailed view of audit findings</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="border rounded-lg p-4">
+                      <h3 className="font-medium mb-2">Audit Plan</h3>
+                      <div className="text-sm text-muted-foreground mb-2">Q3 2023 SEBI Compliance Audit</div>
+                      <div className="grid grid-cols-3 gap-4">
+                        <div>
+                          <span className="text-sm font-medium">Count of Findings:</span>
+                          <div className="mt-1">
+                            <div className="text-sm">Critical: 2</div>
+                            <div className="text-sm">High: 5</div>
+                            <div className="text-sm">Medium: 9</div>
+                            <div className="text-sm">Low: 3</div>
+                          </div>
+                        </div>
+                        <div>
+                          <span className="text-sm font-medium">Finding Severity:</span>
+                          <div className="mt-1">
+                            <div className="text-sm">Critical (2): Immediate action required</div>
+                            <div className="text-sm">High (5): Action required within 30 days</div>
+                            <div className="text-sm">Medium (9): Action required within 60 days</div>
+                          </div>
+                        </div>
+                        <div>
+                          <span className="text-sm font-medium">Control/Domain of Findings:</span>
+                          <div className="mt-1">
+                            <div className="text-sm">Cyber Security: 5</div>
+                            <div className="text-sm">Risk Management: 3</div>
+                            <div className="text-sm">Data Protection: 4</div>
+                            <div className="text-sm">Operational: 7</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="border rounded-lg p-4">
+                      <h3 className="font-medium mb-2">Timeline for Closure/Countdown</h3>
+                      <div className="grid grid-cols-3 gap-4">
+                        <div className="border rounded-lg p-3 bg-red-50">
+                          <h4 className="text-sm font-medium">30 Days</h4>
+                          <p className="text-xl font-bold mt-1">4</p>
+                        </div>
+                        <div className="border rounded-lg p-3 bg-amber-50">
+                          <h4 className="text-sm font-medium">60 Days</h4>
+                          <p className="text-xl font-bold mt-1">8</p>
+                        </div>
+                        <div className="border rounded-lg p-3 bg-blue-50">
+                          <h4 className="text-sm font-medium">90 Days</h4>
+                          <p className="text-xl font-bold mt-1">7</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="border rounded-lg p-4">
+                      <h3 className="font-medium mb-2">Status</h3>
+                      <div className="grid grid-cols-4 gap-4">
+                        <div className="text-center p-3 bg-red-50 rounded-lg">
+                          <p className="text-xl font-bold">1</p>
+                          <p className="text-sm text-muted-foreground">Open</p>
+                        </div>
+                        <div className="text-center p-3 bg-amber-50 rounded-lg">
+                          <p className="text-xl font-bold">5</p>
+                          <p className="text-sm text-muted-foreground">In Progress</p>
+                        </div>
+                        <div className="text-center p-3 bg-green-50 rounded-lg">
+                          <p className="text-xl font-bold">10</p>
+                          <p className="text-sm text-muted-foreground">Resolved</p>
+                        </div>
+                        <div className="text-center p-3 bg-blue-50 rounded-lg">
+                          <p className="text-xl font-bold">3</p>
+                          <p className="text-sm text-muted-foreground">Verified</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="categories" className="mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>SEBI Categories</CardTitle>
                   <CardDescription>Compliance status by category</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  {/* Vertical Bar Chart for SEBI Compliance Categories */}
+                  {/* Categories Content */}
                   <div className="h-80 flex items-end justify-between gap-4 px-4 mb-6">
                     {[
                       {
@@ -110,22 +251,17 @@ export default function SEBIPage() {
                         <div className="text-sm font-medium mb-1">{category.compliance}%</div>
                         <div className="w-full flex justify-center">
                           <div
-                            className={`w-16 rounded-t-md ${
-                              category.compliance < 80
+                            className={`w-12 rounded-t-md ${
+                              category.compliance < 70
                                 ? "bg-red-500"
-                                : category.compliance < 90
+                                : category.compliance < 85
                                   ? "bg-amber-500"
                                   : "bg-green-500"
                             }`}
-                            style={{ height: `${category.compliance * 1.8}px` }}
+                            style={{ height: `${category.compliance * 2}px` }}
                           ></div>
                         </div>
-                        <div
-                          className="text-xs mt-2 text-center font-medium truncate w-full px-1"
-                          title={category.name}
-                        >
-                          {category.name.length > 15 ? category.name.substring(0, 15) + "..." : category.name}
-                        </div>
+                        <div className="text-xs mt-2 text-center font-medium">{category.id}</div>
                       </div>
                     ))}
                   </div>
@@ -187,65 +323,71 @@ export default function SEBIPage() {
                 </CardContent>
               </Card>
             </TabsContent>
-            <TabsContent value="requirements" className="space-y-4 mt-6">
+            
+            <TabsContent value="status" className="mt-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>SEBI Requirements</CardTitle>
-                  <CardDescription>Compliance status by specific requirement</CardDescription>
+                  <CardTitle>Findings Status</CardTitle>
+                  <CardDescription>Current status of audit findings</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {[
-                      { id: 1, name: "Access Control and Authentication", compliance: 95 },
-                      { id: 2, name: "Network Security Management", compliance: 90 },
-                      { id: 3, name: "Data Security and Privacy", compliance: 85 },
-                      { id: 4, name: "Security Incident Management", compliance: 92 },
-                      { id: 5, name: "Vulnerability Assessment and Penetration Testing", compliance: 88 },
-                      { id: 6, name: "Audit Trail and Logs", compliance: 94 },
-                    ].map((requirement) => (
-                      <div key={requirement.id} className="border rounded-md p-3">
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="font-medium">{requirement.name}</div>
-                          <Badge
-                            variant={
-                              requirement.compliance >= 90
-                                ? "outline"
-                                : requirement.compliance >= 80
-                                  ? "secondary"
-                                  : "destructive"
-                            }
-                          >
-                            {requirement.compliance}%
-                          </Badge>
+                    <div className="border rounded-lg p-4">
+                      <h3 className="font-medium mb-2">Status Overview</h3>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-sm">Open Findings</span>
+                            <span className="text-sm font-medium">1 (5.2%)</span>
+                          </div>
+                          <Progress value={5.2} className="h-2" />
+                          
+                          <div className="flex items-center justify-between mt-3">
+                            <span className="text-sm">In Progress</span>
+                            <span className="text-sm font-medium">5 (26.3%)</span>
+                          </div>
+                          <Progress value={26.3} className="h-2" />
+                          
+                          <div className="flex items-center justify-between mt-3">
+                            <span className="text-sm">Resolved</span>
+                            <span className="text-sm font-medium">10 (52.6%)</span>
+                          </div>
+                          <Progress value={52.6} className="h-2" />
+                          
+                          <div className="flex items-center justify-between mt-3">
+                            <span className="text-sm">Verified</span>
+                            <span className="text-sm font-medium">3 (15.8%)</span>
+                          </div>
+                          <Progress value={15.8} className="h-2" />
                         </div>
-                        <Progress value={requirement.compliance} className="h-2" />
+                        <div>
+                          <h4 className="text-sm font-medium mb-2">Department-wise Status</h4>
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm">IT Department</span>
+                              <span className="text-sm font-medium">6 findings (50% resolved)</span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm">Finance Department</span>
+                              <span className="text-sm font-medium">4 findings (75% resolved)</span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm">Operations</span>
+                              <span className="text-sm font-medium">5 findings (40% resolved)</span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm">Compliance</span>
+                              <span className="text-sm font-medium">1 finding (100% resolved)</span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm">Legal</span>
+                              <span className="text-sm font-medium">3 findings (67% resolved)</span>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    ))}
+                    </div>
                   </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-            <TabsContent value="circulars" className="mt-6">
-              {/* Circulars content */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>SEBI Circulars</CardTitle>
-                  <CardDescription>Compliance with specific SEBI circulars</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p>Circulars compliance would be displayed here</p>
-                </CardContent>
-              </Card>
-            </TabsContent>
-            <TabsContent value="history" className="mt-6">
-              {/* History content */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Assessment History</CardTitle>
-                  <CardDescription>Historical compliance data</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p>Assessment history would be displayed here</p>
                 </CardContent>
               </Card>
             </TabsContent>

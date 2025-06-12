@@ -1,262 +1,380 @@
-import { InternalAuditorSidebar } from "@/components/internal-auditor-sidebar"
+import { ComplianceMaturityRadarChart } from "@/components/radar-chart"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
-import { Download, CheckCircle, XCircle, AlertCircle } from "lucide-react"
+import { Download, CheckCircle, XCircle, AlertCircle, FileText, Filter, ArrowUpDown } from "lucide-react"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 
-export default function NISTPage() {
+export default function NISTAuditorPage() {
+  // Radar chart data for NIST CSF domains
+  const radarData = [
+    { subject: "Identify", score: 70, fullMark: 100 },
+    { subject: "Protect", score: 75, fullMark: 100 },
+    { subject: "Detect", score: 60, fullMark: 100 },
+    { subject: "Respond", score: 55, fullMark: 100 },
+    { subject: "Recover", score: 50, fullMark: 100 },
+  ]
+
   return (
-    <div className="flex min-h-screen bg-slate-50">
-      <InternalAuditorSidebar />
-      <div className="flex-1 flex flex-col">
-        <main className="flex-1 p-6">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight">NIST Cybersecurity Framework</h1>
-              <p className="text-muted-foreground">Compliance with NIST CSF standards</p>
-            </div>
-            <div className="flex items-center gap-4">
-              <Button variant="outline">
-                <Download className="h-4 w-4 mr-2" />
-                Export Report
-              </Button>
-              <Button>View Assessment History</Button>
-            </div>
-          </div>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">NIST Cybersecurity Framework</h1>
+          <p className="text-muted-foreground">Compliance with NIST CSF standards</p>
+        </div>
+        <div className="flex items-center gap-4">
+          <Button variant="outline">
+            <Download className="h-4 w-4 mr-2" />
+            Export Report
+          </Button>
+          <Button>View Assessment History</Button>
+        </div>
+      </div>
 
-          {/* Overall Compliance Score */}
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle>Overall Compliance Score</CardTitle>
-              <CardDescription>Based on the latest assessment</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium">65% Compliant</span>
-                <span className="text-sm font-medium">Target: 80%</span>
-              </div>
-              <Progress value={65} className="h-3" />
-              <div className="grid grid-cols-3 gap-4 mt-6">
-                <div className="flex flex-col items-center p-4 bg-green-50 rounded-lg">
-                  <CheckCircle className="h-8 w-8 text-green-500 mb-2" />
-                  <span className="text-xl font-bold">87</span>
-                  <span className="text-sm text-muted-foreground">Controls Compliant</span>
-                </div>
-                <div className="flex flex-col items-center p-4 bg-amber-50 rounded-lg">
-                  <AlertCircle className="h-8 w-8 text-amber-500 mb-2" />
-                  <span className="text-xl font-bold">32</span>
-                  <span className="text-sm text-muted-foreground">Partially Compliant</span>
-                </div>
-                <div className="flex flex-col items-center p-4 bg-red-50 rounded-lg">
-                  <XCircle className="h-8 w-8 text-red-500 mb-2" />
-                  <span className="text-xl font-bold">15</span>
-                  <span className="text-sm text-muted-foreground">Non-Compliant</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+      {/* Dashboard Statistics */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Overall Maturity</CardTitle>
+            <div className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">65%</div>
+            <p className="text-xs text-muted-foreground">+2.5% from last assessment</p>
+            <Progress value={65} className="h-2 mt-2" />
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Compliant</CardTitle>
+            <CheckCircle className="h-4 w-4 text-green-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">87</div>
+            <p className="text-xs text-muted-foreground">Controls fully implemented</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Observations</CardTitle>
+            <AlertCircle className="h-4 w-4 text-amber-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">32</div>
+            <p className="text-xs text-muted-foreground">Partial implementation</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Non-Conformance</CardTitle>
+            <XCircle className="h-4 w-4 text-red-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">15</div>
+            <p className="text-xs text-muted-foreground">Controls not implemented</p>
+          </CardContent>
+        </Card>
+      </div>
 
-          <Tabs defaultValue="functions">
+      <div className="grid gap-6 md:grid-cols-2">
+        {/* Overall Maturity Score */}
+        <Card className="md:col-span-1">
+          <CardHeader>
+            <CardTitle>Overall Maturity Score</CardTitle>
+            <CardDescription>Radar view of NIST CSF domains</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="h-80">
+              <ComplianceMaturityRadarChart 
+                data={radarData}
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Core Functions */}
+        <Card>
+          <CardHeader>
+            <CardTitle>NIST CSF Core Functions</CardTitle>
+            <CardDescription>Compliance status by core function</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {[
+                {
+                  id: 1,
+                  name: "Identify (ID)",
+                  description: "Develop organizational understanding to manage cybersecurity risk",
+                  compliance: 70,
+                },
+                {
+                  id: 2,
+                  name: "Protect (PR)",
+                  description: "Develop and implement appropriate safeguards",
+                  compliance: 75,
+                },
+                {
+                  id: 3,
+                  name: "Detect (DE)",
+                  description: "Develop and implement activities to identify cybersecurity events",
+                  compliance: 60,
+                },
+                {
+                  id: 4,
+                  name: "Respond (RS)",
+                  description: "Develop and implement activities to take action regarding a cybersecurity incident",
+                  compliance: 55,
+                },
+                {
+                  id: 5,
+                  name: "Recover (RC)",
+                  description: "Develop and implement activities to maintain resilience and restore capabilities",
+                  compliance: 50,
+                },
+              ].map((function_) => (
+                <div key={function_.id} className="border rounded-md p-3">
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="font-medium">{function_.name}</div>
+                    <Badge
+                      variant={
+                        function_.compliance >= 70
+                          ? "outline"
+                          : function_.compliance >= 60
+                            ? "secondary"
+                            : "destructive"
+                      }
+                    >
+                      {function_.compliance}%
+                    </Badge>
+                  </div>
+                  <div className="flex items-center justify-between mb-1">
+                    <p className="text-sm text-muted-foreground">{function_.description}</p>
+                  </div>
+                  <Progress value={function_.compliance} className="h-2 mt-2" />
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Findings Tabs */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Overall Findings</CardTitle>
+          <CardDescription>Audit Plan and Count of Findings</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Tabs defaultValue="audit-plan">
             <TabsList>
-              <TabsTrigger value="functions">Core Functions</TabsTrigger>
-              <TabsTrigger value="categories">Categories</TabsTrigger>
-              <TabsTrigger value="controls">Controls</TabsTrigger>
-              <TabsTrigger value="history">Assessment History</TabsTrigger>
+              <TabsTrigger value="audit-plan">Audit Plan</TabsTrigger>
+              <TabsTrigger value="count">Count of Findings</TabsTrigger>
+              <TabsTrigger value="status">Status</TabsTrigger>
             </TabsList>
-            <TabsContent value="functions" className="space-y-4 mt-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>NIST CSF Core Functions</CardTitle>
-                  <CardDescription>Compliance status by core function</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {/* Vertical Bar Chart for NIST Core Functions */}
-                  <div className="h-80 flex items-end justify-between gap-6 px-4 mb-6">
-                    {[
-                      {
-                        id: 1,
-                        name: "Identify (ID)",
-                        description: "Develop organizational understanding to manage cybersecurity risk",
-                        compliance: 70,
-                      },
-                      {
-                        id: 2,
-                        name: "Protect (PR)",
-                        description: "Develop and implement appropriate safeguards",
-                        compliance: 75,
-                      },
-                      {
-                        id: 3,
-                        name: "Detect (DE)",
-                        description: "Develop and implement activities to identify cybersecurity events",
-                        compliance: 60,
-                      },
-                      {
-                        id: 4,
-                        name: "Respond (RS)",
-                        description:
-                          "Develop and implement activities to take action regarding a cybersecurity incident",
-                        compliance: 55,
-                      },
-                      {
-                        id: 5,
-                        name: "Recover (RC)",
-                        description: "Develop and implement activities to maintain resilience and restore capabilities",
-                        compliance: 50,
-                      },
-                    ].map((function_) => (
-                      <div key={function_.id} className="flex flex-col items-center flex-1">
-                        <div className="text-sm font-medium mb-1">{function_.compliance}%</div>
-                        <div className="w-full flex justify-center">
-                          <div
-                            className={`w-20 rounded-t-md ${
-                              function_.compliance < 60
-                                ? "bg-red-500"
-                                : function_.compliance < 70
-                                  ? "bg-amber-500"
-                                  : "bg-green-500"
-                            }`}
-                            style={{ height: `${function_.compliance * 2}px` }}
-                          ></div>
-                        </div>
-                        <div className="text-xs mt-2 text-center font-medium">{function_.name}</div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Function descriptions */}
-                  <div className="space-y-4 mt-8 border-t pt-4">
-                    <h3 className="text-sm font-medium">Function Details</h3>
-                    {[
-                      {
-                        id: 1,
-                        name: "Identify (ID)",
-                        description: "Develop organizational understanding to manage cybersecurity risk",
-                        compliance: 70,
-                      },
-                      {
-                        id: 2,
-                        name: "Protect (PR)",
-                        description: "Develop and implement appropriate safeguards",
-                        compliance: 75,
-                      },
-                      {
-                        id: 3,
-                        name: "Detect (DE)",
-                        description: "Develop and implement activities to identify cybersecurity events",
-                        compliance: 60,
-                      },
-                      {
-                        id: 4,
-                        name: "Respond (RS)",
-                        description:
-                          "Develop and implement activities to take action regarding a cybersecurity incident",
-                        compliance: 55,
-                      },
-                      {
-                        id: 5,
-                        name: "Recover (RC)",
-                        description: "Develop and implement activities to maintain resilience and restore capabilities",
-                        compliance: 50,
-                      },
-                    ].map((function_) => (
-                      <div key={function_.id} className="border rounded-md p-3">
-                        <div className="flex items-center justify-between mb-1">
-                          <div className="font-medium">{function_.name}</div>
-                          <Badge
-                            variant={
-                              function_.compliance >= 70
-                                ? "outline"
-                                : function_.compliance >= 60
-                                  ? "secondary"
-                                  : "destructive"
-                            }
-                          >
-                            {function_.compliance}%
-                          </Badge>
-                        </div>
-                        <p className="text-sm text-muted-foreground">{function_.description}</p>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+            
+            <TabsContent value="audit-plan" className="space-y-4 mt-4">
+              <div className="rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Audit Date</TableHead>
+                      <TableHead>Scope</TableHead>
+                      <TableHead>Auditor</TableHead>
+                      <TableHead>Status</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell>12 May 2023</TableCell>
+                      <TableCell>NIST CSF v1.1 Full Assessment</TableCell>
+                      <TableCell>Internal Audit Team</TableCell>
+                      <TableCell><Badge>Completed</Badge></TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>18 Aug 2023</TableCell>
+                      <TableCell>NIST CSF Identify Domain</TableCell>
+                      <TableCell>External Consultant</TableCell>
+                      <TableCell><Badge>Completed</Badge></TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>24 Nov 2023</TableCell>
+                      <TableCell>NIST CSF Protect Domain</TableCell>
+                      <TableCell>Internal Audit Team</TableCell>
+                      <TableCell><Badge>Completed</Badge></TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>15 Feb 2024</TableCell>
+                      <TableCell>NIST CSF Detect Domain</TableCell>
+                      <TableCell>Internal Audit Team</TableCell>
+                      <TableCell><Badge variant="outline">Scheduled</Badge></TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </div>
             </TabsContent>
-            <TabsContent value="categories" className="mt-6">
-              {/* Categories content */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>NIST CSF Categories</CardTitle>
-                  <CardDescription>Detailed breakdown by category</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {[
-                      { id: 1, function: "Identify (ID)", name: "ID.AM: Asset Management", compliance: 75 },
-                      { id: 2, function: "Identify (ID)", name: "ID.BE: Business Environment", compliance: 65 },
-                      { id: 3, function: "Identify (ID)", name: "ID.GV: Governance", compliance: 80 },
-                      { id: 4, function: "Identify (ID)", name: "ID.RA: Risk Assessment", compliance: 70 },
-                      { id: 5, function: "Protect (PR)", name: "PR.AC: Access Control", compliance: 85 },
-                      { id: 6, function: "Protect (PR)", name: "PR.DS: Data Security", compliance: 65 },
-                      { id: 7, function: "Detect (DE)", name: "DE.CM: Security Continuous Monitoring", compliance: 60 },
-                      { id: 8, function: "Respond (RS)", name: "RS.RP: Response Planning", compliance: 55 },
-                    ].map((category) => (
-                      <div key={category.id} className="border rounded-md p-3">
-                        <div className="flex items-center justify-between mb-2">
-                          <div>
-                            <Badge variant="outline" className="mb-1">
-                              {category.function}
-                            </Badge>
-                            <div className="font-medium">{category.name}</div>
-                          </div>
-                          <Badge
-                            variant={
-                              category.compliance >= 80
-                                ? "outline"
-                                : category.compliance >= 60
-                                  ? "secondary"
-                                  : "destructive"
-                            }
-                          >
-                            {category.compliance}%
-                          </Badge>
-                        </div>
-                        <Progress value={category.compliance} className="h-2" />
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+            
+            <TabsContent value="count" className="mt-4">
+              <div className="rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Severity</TableHead>
+                      <TableHead>Total Findings</TableHead>
+                      <TableHead>Open</TableHead>
+                      <TableHead>In Progress</TableHead>
+                      <TableHead>Closed</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell>High</TableCell>
+                      <TableCell>8</TableCell>
+                      <TableCell>3</TableCell>
+                      <TableCell>2</TableCell>
+                      <TableCell>3</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Medium</TableCell>
+                      <TableCell>24</TableCell>
+                      <TableCell>5</TableCell>
+                      <TableCell>9</TableCell>
+                      <TableCell>10</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Low</TableCell>
+                      <TableCell>15</TableCell>
+                      <TableCell>2</TableCell>
+                      <TableCell>3</TableCell>
+                      <TableCell>10</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </div>
             </TabsContent>
-            <TabsContent value="controls" className="mt-6">
-              {/* Controls content */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>NIST CSF Controls</CardTitle>
-                  <CardDescription>Individual control assessment</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p>Controls assessment would be displayed here</p>
-                </CardContent>
-              </Card>
-            </TabsContent>
-            <TabsContent value="history" className="mt-6">
-              {/* History content */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Assessment History</CardTitle>
-                  <CardDescription>Historical compliance data</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p>Assessment history would be displayed here</p>
-                </CardContent>
-              </Card>
+            
+            <TabsContent value="status" className="mt-4">
+              <div className="rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Count</TableHead>
+                      <TableHead>Percentage</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell>Open</TableCell>
+                      <TableCell>10</TableCell>
+                      <TableCell>21%</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>In Progress</TableCell>
+                      <TableCell>14</TableCell>
+                      <TableCell>30%</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Closed</TableCell>
+                      <TableCell>23</TableCell>
+                      <TableCell>49%</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </div>
             </TabsContent>
           </Tabs>
-        </main>
-      </div>
+        </CardContent>
+      </Card>
+
+      {/* Findings View */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Findings View</CardTitle>
+              <CardDescription>Details of all audit findings</CardDescription>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm">
+                <Filter className="h-4 w-4 mr-1" /> Filter
+              </Button>
+              <Button variant="outline" size="sm">
+                <ArrowUpDown className="h-4 w-4 mr-1" /> Sort
+              </Button>
+              <Button size="sm">
+                <FileText className="h-4 w-4 mr-1" /> Export
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>ID</TableHead>
+                  <TableHead>Finding</TableHead>
+                  <TableHead>Control Domain</TableHead>
+                  <TableHead>Severity</TableHead>
+                  <TableHead>Timeline</TableHead>
+                  <TableHead>Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow>
+                  <TableCell>NIST-01</TableCell>
+                  <TableCell>Incomplete asset inventory</TableCell>
+                  <TableCell>ID.AM</TableCell>
+                  <TableCell><Badge variant="destructive">High</Badge></TableCell>
+                  <TableCell>30 May 2024</TableCell>
+                  <TableCell><Badge variant="outline">In Progress</Badge></TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>NIST-02</TableCell>
+                  <TableCell>Inadequate access controls</TableCell>
+                  <TableCell>PR.AC</TableCell>
+                  <TableCell><Badge variant="destructive">High</Badge></TableCell>
+                  <TableCell>15 Jun 2024</TableCell>
+                  <TableCell><Badge variant="outline">Open</Badge></TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>NIST-03</TableCell>
+                  <TableCell>Missing security awareness training</TableCell>
+                  <TableCell>PR.AT</TableCell>
+                  <TableCell><Badge>Medium</Badge></TableCell>
+                  <TableCell>22 Apr 2024</TableCell>
+                  <TableCell><Badge variant="secondary">Closed</Badge></TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>NIST-04</TableCell>
+                  <TableCell>Incomplete data security policies</TableCell>
+                  <TableCell>PR.DS</TableCell>
+                  <TableCell><Badge>Medium</Badge></TableCell>
+                  <TableCell>10 Jul 2024</TableCell>
+                  <TableCell><Badge variant="outline">In Progress</Badge></TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>NIST-05</TableCell>
+                  <TableCell>Insufficient monitoring capabilities</TableCell>
+                  <TableCell>DE.CM</TableCell>
+                  <TableCell><Badge variant="destructive">High</Badge></TableCell>
+                  <TableCell>05 Aug 2024</TableCell>
+                  <TableCell><Badge variant="outline">Open</Badge></TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }

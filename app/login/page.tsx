@@ -34,6 +34,8 @@ export default function LoginPage() {
       
       if (userRole === "internal-auditor") {
         router.push("/dashboard/internal-auditor")
+      } else if (userRole === "executive") {
+        router.push("/dashboard/management")
       } else {
         router.push("/dashboard/internal-auditor") // Default to internal auditor for now
       }
@@ -156,7 +158,13 @@ export default function LoginPage() {
             </div>
             
             <button
-              onClick={() => router.push("/dashboard/internal-auditor")}
+              onClick={() => {
+                if (userRole === "executive") {
+                  router.push("/dashboard/management")
+                } else {
+                  router.push("/dashboard/internal-auditor")
+                }
+              }}
               className="w-full h-12 bg-black text-white rounded-lg font-medium hover:bg-gray-900 transition-colors"
             >
               Continue to Dashboard

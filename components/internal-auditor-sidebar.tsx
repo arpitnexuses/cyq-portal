@@ -33,6 +33,13 @@ import {
   Menu,
   X,
   Settings,
+  Activity,
+  BadgeInfo,
+  Layers,
+  Database,
+  Bomb,
+  Truck,
+  CalendarDays,
 } from "lucide-react"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { cn } from "@/lib/utils"
@@ -43,14 +50,13 @@ export function InternalAuditorSidebar() {
   const router = useRouter()
   const [collapsed, setCollapsed] = useState(false)
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
-    personal: false,
+    myProfile: false,
     myDashboard: false,
-    regulatory: false,
+    riskExposure: false,
     compliance: false,
-    overview: false,
-    complianceCalendar: false,
     auditManagement: false,
-    requests: false,
+    settings: false,
+    gettingStarted: false,
   })
 
   // Initialize open sections based on current path
@@ -58,30 +64,22 @@ export function InternalAuditorSidebar() {
     const newOpenSections = { ...openSections }
     
     if (pathname.includes('/my-account')) {
-      newOpenSections.personal = true
+      newOpenSections.myProfile = true
     }
-    if (pathname.includes('/settings')) {
-      newOpenSections.personal = true
-    }
-    if (pathname.includes('/regulatory-exposure')) {
-      newOpenSections.myDashboard = true
-      newOpenSections.regulatory = true
+    if (pathname.includes('/risk-exposure')) {
+      newOpenSections.riskExposure = true
     }
     if (pathname.includes('/compliance-maturity')) {
-      newOpenSections.myDashboard = true
       newOpenSections.compliance = true
     }
-    if (pathname.includes('/overview')) {
-      newOpenSections.overview = true
-    }
-    if (pathname.includes('/compliance-calendar')) {
-      newOpenSections.complianceCalendar = true
-    }
-    if (pathname.includes('/audit-management')) {
+    if (pathname.includes('/audit-management') || pathname.includes('/compliance-calendar')) {
       newOpenSections.auditManagement = true
     }
-    if (pathname.includes('/requests')) {
-      newOpenSections.requests = true
+    if (pathname.includes('/settings')) {
+      newOpenSections.settings = true
+    }
+    if (pathname.includes('/getting-started')) {
+      newOpenSections.gettingStarted = true
     }
 
     setOpenSections(newOpenSections)
@@ -148,43 +146,36 @@ export function InternalAuditorSidebar() {
       <ScrollArea className="flex-1 overflow-y-auto">
         <div className="px-3 py-4">
           <nav className="space-y-2" onClick={(e) => e.stopPropagation()}>
-            {/* Personal Section */}
+            {/* My Profile Section */}
             <Collapsible 
-              open={openSections.personal}
+              open={openSections.myProfile}
               onOpenChange={(open) => {
-                setOpenSections(prev => ({ ...prev, personal: open }))
+                setOpenSections(prev => ({ ...prev, myProfile: open }))
               }}
             >
               <CollapsibleTrigger
-                onClick={(e) => toggleSection("personal", e)}
+                onClick={(e) => toggleSection("myProfile", e)}
                 className={cn(
                   "flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium",
                   "text-white/90 hover:bg-white/10 hover:text-white transition-all duration-200",
-                  openSections.personal && "bg-white/10 text-white",
+                  openSections.myProfile && "bg-white/10 text-white",
                 )}
               >
                 <div className="flex items-center">
                   <User className="h-4 w-4 mr-3" />
-                  {!collapsed && <span>Personal</span>}
+                  {!collapsed && <span>My Profile</span>}
                 </div>
                 {!collapsed &&
-                  (openSections.personal ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />)}
+                  (openSections.myProfile ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />)}
               </CollapsibleTrigger>
               <CollapsibleContent>
                 <div className="pl-6 space-y-1.5 pt-1.5" onClick={(e) => e.stopPropagation()}>
                   <SidebarItem
                     icon={User}
-                    label="My Profile"
+                    label="My Account"
                     href="/dashboard/internal-auditor/my-account"
                     collapsed={collapsed}
                     isActive={pathname === "/dashboard/internal-auditor/my-account"}
-                  />
-                  <SidebarItem
-                    icon={Settings}
-                    label="Settings"
-                    href="/dashboard/internal-auditor/settings"
-                    collapsed={collapsed}
-                    isActive={pathname === "/dashboard/internal-auditor/settings"}
                   />
                 </div>
               </CollapsibleContent>
@@ -200,37 +191,27 @@ export function InternalAuditorSidebar() {
               className="mt-1"
             />
 
-            {/* Posture Maturity - Direct Link */}
-            <SidebarItem
-              icon={Shield}
-              label="Posture Maturity"
-              href="/dashboard/internal-auditor/posture-maturity"
-              collapsed={collapsed}
-              isActive={pathname === "/dashboard/internal-auditor/posture-maturity"}
-              className="mt-1"
-            />
-
-            {/* Regulatory Exposure - Nested */}
+            {/* Risk Exposure - Nested */}
             <Collapsible 
-              open={openSections.regulatory}
+              open={openSections.riskExposure}
               onOpenChange={(open) => {
-                setOpenSections(prev => ({ ...prev, regulatory: open }))
+                setOpenSections(prev => ({ ...prev, riskExposure: open }))
               }}
             >
               <CollapsibleTrigger
-                onClick={(e) => toggleSection("regulatory", e)}
+                onClick={(e) => toggleSection("riskExposure", e)}
                 className={cn(
                   "flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium",
                   "text-white/90 hover:bg-white/10 hover:text-white transition-all duration-200",
-                  openSections.regulatory && "bg-white/10 text-white",
+                  openSections.riskExposure && "bg-white/10 text-white",
                 )}
               >
                 <div className="flex items-center">
                   <AlertTriangle className="h-4 w-4 mr-3" />
-                  {!collapsed && <span>Regulatory Exposure</span>}
+                  {!collapsed && <span>Risk Exposure</span>}
                 </div>
                 {!collapsed &&
-                  (openSections.regulatory ? (
+                  (openSections.riskExposure ? (
                     <ChevronUp className="h-4 w-4" />
                   ) : (
                     <ChevronDown className="h-4 w-4" />
@@ -239,32 +220,53 @@ export function InternalAuditorSidebar() {
               <CollapsibleContent>
                 <div className="pl-6 space-y-1.5 pt-1.5" onClick={(e) => e.stopPropagation()}>
                   <SidebarItem
-                    icon={FileText}
-                    label="Findings"
-                    href="/dashboard/internal-auditor/regulatory-exposure/findings"
+                    icon={AlertTriangle}
+                    label="Regulatory Risks"
+                    href="/dashboard/internal-auditor/risk-exposure/regulatory-risks"
                     collapsed={collapsed}
-                    isActive={pathname === "/dashboard/internal-auditor/regulatory-exposure/findings"}
+                    isActive={pathname === "/dashboard/internal-auditor/risk-exposure/regulatory-risks"}
                   />
                   <SidebarItem
-                    icon={BarChart}
-                    label="Risks"
-                    href="/dashboard/internal-auditor/regulatory-exposure/risks"
+                    icon={AlertTriangle}
+                    label="Compliance Risks"
+                    href="/dashboard/internal-auditor/risk-exposure/compliance-risks"
                     collapsed={collapsed}
-                    isActive={pathname === "/dashboard/internal-auditor/regulatory-exposure/risks"}
+                    isActive={pathname === "/dashboard/internal-auditor/risk-exposure/compliance-risks"}
                   />
                   <SidebarItem
-                    icon={BarChart}
-                    label="Impacts"
-                    href="/dashboard/internal-auditor/regulatory-exposure/impacts"
+                    icon={AlertTriangle}
+                    label="Cyber Risks"
+                    href="/dashboard/internal-auditor/risk-exposure/cyber-risks"
                     collapsed={collapsed}
-                    isActive={pathname === "/dashboard/internal-auditor/regulatory-exposure/impacts"}
+                    isActive={pathname === "/dashboard/internal-auditor/risk-exposure/cyber-risks"}
                   />
                   <SidebarItem
-                    icon={FileSearch}
-                    label="Compliance Mapping"
-                    href="/dashboard/internal-auditor/regulatory-exposure/compliance-mapping"
+                    icon={RefreshCw}
+                    label="Business Continuity"
+                    href="/dashboard/internal-auditor/risk-exposure/business-continuity"
                     collapsed={collapsed}
-                    isActive={pathname === "/dashboard/internal-auditor/regulatory-exposure/compliance-mapping"}
+                    isActive={pathname === "/dashboard/internal-auditor/risk-exposure/business-continuity"}
+                  />
+                  <SidebarItem
+                    icon={Database}
+                    label="Data Breach"
+                    href="/dashboard/internal-auditor/risk-exposure/data-breach"
+                    collapsed={collapsed}
+                    isActive={pathname === "/dashboard/internal-auditor/risk-exposure/data-breach"}
+                  />
+                  <SidebarItem
+                    icon={Truck}
+                    label="Supply Chain"
+                    href="/dashboard/internal-auditor/risk-exposure/supply-chain"
+                    collapsed={collapsed}
+                    isActive={pathname === "/dashboard/internal-auditor/risk-exposure/supply-chain"}
+                  />
+                  <SidebarItem
+                    icon={Eye}
+                    label="Individual Risks View"
+                    href="/dashboard/internal-auditor/risk-exposure/individual-risks"
+                    collapsed={collapsed}
+                    isActive={pathname === "/dashboard/internal-auditor/risk-exposure/individual-risks"}
                   />
                 </div>
               </CollapsibleContent>
@@ -295,10 +297,17 @@ export function InternalAuditorSidebar() {
                 <div className="pl-6 space-y-1.5 pt-1.5">
                   <SidebarItem
                     icon={Shield}
-                    label="ISO 2700"
-                    href="/dashboard/internal-auditor/compliance-maturity/iso-2700"
+                    label="ISO 27001"
+                    href="/dashboard/internal-auditor/compliance-maturity/iso-27001"
                     collapsed={collapsed}
-                    isActive={pathname === "/dashboard/internal-auditor/compliance-maturity/iso-2700"}
+                    isActive={pathname === "/dashboard/internal-auditor/compliance-maturity/iso-27001"}
+                  />
+                  <SidebarItem
+                    icon={Shield}
+                    label="SEBI"
+                    href="/dashboard/internal-auditor/compliance-maturity/sebi"
+                    collapsed={collapsed}
+                    isActive={pathname === "/dashboard/internal-auditor/compliance-maturity/sebi"}
                   />
                   <SidebarItem
                     icon={Shield}
@@ -314,94 +323,19 @@ export function InternalAuditorSidebar() {
                     collapsed={collapsed}
                     isActive={pathname === "/dashboard/internal-auditor/compliance-maturity/cis"}
                   />
-                  <SidebarItem
-                    icon={Shield}
-                    label="SEBI"
-                    href="/dashboard/internal-auditor/compliance-maturity/sebi"
-                    collapsed={collapsed}
-                    isActive={pathname === "/dashboard/internal-auditor/compliance-maturity/sebi"}
-                  />
                 </div>
               </CollapsibleContent>
             </Collapsible>
 
-            {/* Overview */}
-            <Collapsible open={openSections.overview}>
-              <CollapsibleTrigger
-                onClick={() => toggleSection("overview")}
-                className={cn(
-                  "flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium",
-                  "text-white/90 hover:bg-white/10 hover:text-white transition-all duration-200",
-                  openSections.overview && "bg-white/10 text-white",
-                )}
-              >
-                <div className="flex items-center">
-                  <BarChart3 className="h-4 w-4 mr-3" />
-                  {!collapsed && <span>Overview</span>}
-                </div>
-                {!collapsed &&
-                  (openSections.overview ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />)}
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <div className="pl-6 space-y-1.5 pt-1.5">
-                  <SidebarItem
-                    icon={BarChart3}
-                    label="Current Audit Status"
-                    href="/dashboard/internal-auditor/overview/current-audit-status"
-                    collapsed={collapsed}
-                    isActive={pathname === "/dashboard/internal-auditor/overview/current-audit-status"}
-                  />
-                  <SidebarItem
-                    icon={List}
-                    label="Table"
-                    href="/dashboard/internal-auditor/overview/table"
-                    collapsed={collapsed}
-                    isActive={pathname === "/dashboard/internal-auditor/overview/table"}
-                  />
-                </div>
-              </CollapsibleContent>
-            </Collapsible>
-
-            {/* Compliance Calendar */}
-            <Collapsible open={openSections.complianceCalendar}>
-              <CollapsibleTrigger
-                onClick={() => toggleSection("complianceCalendar")}
-                className={cn(
-                  "flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium",
-                  "text-white/90 hover:bg-white/10 hover:text-white transition-all duration-200",
-                  openSections.complianceCalendar && "bg-white/10 text-white",
-                )}
-              >
-                <div className="flex items-center">
-                  <Calendar className="h-4 w-4 mr-3" />
-                  {!collapsed && <span>Compliance Calendar</span>}
-                </div>
-                {!collapsed &&
-                  (openSections.complianceCalendar ? (
-                    <ChevronUp className="h-4 w-4" />
-                  ) : (
-                    <ChevronDown className="h-4 w-4" />
-                  ))}
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <div className="pl-6 space-y-1.5 pt-1.5">
-                  <SidebarItem
-                    icon={Calendar}
-                    label="Overall Schedule"
-                    href="/dashboard/internal-auditor/compliance-calendar/overall-schedule"
-                    collapsed={collapsed}
-                    isActive={pathname === "/dashboard/internal-auditor/compliance-calendar/overall-schedule"}
-                  />
-                  <SidebarItem
-                    icon={Calendar}
-                    label="Task/Compliance Calendar"
-                    href="/dashboard/internal-auditor/compliance-calendar/task-calendar"
-                    collapsed={collapsed}
-                    isActive={pathname === "/dashboard/internal-auditor/compliance-calendar/task-calendar"}
-                  />
-                </div>
-              </CollapsibleContent>
-            </Collapsible>
+            {/* Posture Maturity - Direct Link */}
+            <SidebarItem
+              icon={Shield}
+              label="Posture Maturity"
+              href="/dashboard/internal-auditor/posture-maturity"
+              collapsed={collapsed}
+              isActive={pathname === "/dashboard/internal-auditor/posture-maturity" || pathname.includes("/dashboard/internal-auditor/posture-maturity/")}
+              className="mt-1"
+            />
 
             {/* Audit Management */}
             <Collapsible open={openSections.auditManagement}>
@@ -441,11 +375,11 @@ export function InternalAuditorSidebar() {
                     isActive={pathname === "/dashboard/internal-auditor/audit-management/audit-schedule"}
                   />
                   <SidebarItem
-                    icon={FileSearch}
-                    label="Audit Scope"
-                    href="/dashboard/internal-auditor/audit-management/audit-scope"
+                    icon={CalendarDays}
+                    label="Compliance Calendar"
+                    href="/dashboard/internal-auditor/compliance-calendar/overall-schedule"
                     collapsed={collapsed}
-                    isActive={pathname === "/dashboard/internal-auditor/audit-management/audit-scope"}
+                    isActive={pathname.includes("/dashboard/internal-auditor/compliance-calendar")}
                   />
                   <SidebarItem
                     icon={Users}
@@ -493,38 +427,75 @@ export function InternalAuditorSidebar() {
               </CollapsibleContent>
             </Collapsible>
 
-            {/* Requests */}
-            <Collapsible open={openSections.requests}>
+            {/* Settings */}
+            <Collapsible open={openSections.settings}>
               <CollapsibleTrigger
-                onClick={() => toggleSection("requests")}
+                onClick={() => toggleSection("settings")}
                 className={cn(
                   "flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium",
                   "text-white/90 hover:bg-white/10 hover:text-white transition-all duration-200",
-                  openSections.requests && "bg-white/10 text-white",
+                  openSections.settings && "bg-white/10 text-white",
                 )}
               >
                 <div className="flex items-center">
-                  <MessageSquare className="h-4 w-4 mr-3" />
-                  {!collapsed && <span>Requests</span>}
+                  <Settings className="h-4 w-4 mr-3" />
+                  {!collapsed && <span>Settings</span>}
                 </div>
                 {!collapsed &&
-                  (openSections.requests ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />)}
+                  (openSections.settings ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />)}
               </CollapsibleTrigger>
               <CollapsibleContent>
                 <div className="pl-6 space-y-1.5 pt-1.5">
                   <SidebarItem
-                    icon={Eye}
-                    label="View Request"
-                    href="/dashboard/internal-auditor/requests/view"
+                    icon={Lock}
+                    label="Password Security"
+                    href="/dashboard/internal-auditor/settings/password-security"
                     collapsed={collapsed}
-                    isActive={pathname === "/dashboard/internal-auditor/requests/view"}
+                    isActive={pathname === "/dashboard/internal-auditor/settings/password-security"}
                   />
                   <SidebarItem
-                    icon={PlusCircle}
-                    label="Create Request"
-                    href="/dashboard/internal-auditor/requests/create"
+                    icon={Activity}
+                    label="Activity Logs"
+                    href="/dashboard/internal-auditor/settings/activity-logs"
                     collapsed={collapsed}
-                    isActive={pathname === "/dashboard/internal-auditor/requests/create"}
+                    isActive={pathname === "/dashboard/internal-auditor/settings/activity-logs"}
+                  />
+                  <SidebarItem
+                    icon={MessageSquare}
+                    label="Requests"
+                    href="/dashboard/internal-auditor/requests"
+                    collapsed={collapsed}
+                    isActive={pathname.includes("/dashboard/internal-auditor/requests")}
+                  />
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
+
+            {/* Getting Started */}
+            <Collapsible open={openSections.gettingStarted}>
+              <CollapsibleTrigger
+                onClick={() => toggleSection("gettingStarted")}
+                className={cn(
+                  "flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium",
+                  "text-white/90 hover:bg-white/10 hover:text-white transition-all duration-200",
+                  openSections.gettingStarted && "bg-white/10 text-white",
+                )}
+              >
+                <div className="flex items-center">
+                  <BadgeInfo className="h-4 w-4 mr-3" />
+                  {!collapsed && <span>Getting Started</span>}
+                </div>
+                {!collapsed &&
+                  (openSections.gettingStarted ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />)}
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <div className="pl-6 space-y-1.5 pt-1.5">
+                  <SidebarItem
+                    icon={BadgeInfo}
+                    label="Getting Started Guide"
+                    href="/dashboard/internal-auditor/getting-started"
+                    collapsed={collapsed}
+                    isActive={pathname === "/dashboard/internal-auditor/getting-started"}
                   />
                 </div>
               </CollapsibleContent>

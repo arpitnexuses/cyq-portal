@@ -1,355 +1,305 @@
 "use client"
 import { InternalAuditorDashboardHeader } from "@/components/internal-auditor-dashboard-header"
 import { InternalAuditorSidebar } from "@/components/internal-auditor-sidebar"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { CalendarDays, Download, Filter, Plus, Search, ChevronRight, Clock, AlertCircle, CheckCircle2, ChevronLeft } from "lucide-react"
+import { 
+  CalendarDays, 
+  Download, 
+  Filter, 
+  Plus, 
+  Search, 
+  ChevronRight, 
+  Clock, 
+  Calendar,
+  MapPin,
+  Building2,
+  Briefcase,
+  Users,
+  FileText
+} from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Calendar as CalendarComponent } from "@/components/ui/calendar"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog"
+import { format } from "date-fns"
 import { useState } from "react"
 
 export default function AuditSchedulePage() {
-  const [currentDate, setCurrentDate] = useState(new Date())
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date())
-
-  const daysInMonth = new Date(
-    currentDate.getFullYear(),
-    currentDate.getMonth() + 1,
-    0
-  ).getDate()
-
-  const firstDayOfMonth = new Date(
-    currentDate.getFullYear(),
-    currentDate.getMonth(),
-    1
-  ).getDay()
-
-  const monthNames = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-  ]
-
-  const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-
-  const handlePrevMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1))
-  }
-
-  const handleNextMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1))
-  }
-
-  const isToday = (date: number) => {
-    const today = new Date()
-    return (
-      date === today.getDate() &&
-      currentDate.getMonth() === today.getMonth() &&
-      currentDate.getFullYear() === today.getFullYear()
-    )
-  }
-
-  const isSelected = (date: number) => {
-    if (!selectedDate) return false
-    return (
-      date === selectedDate.getDate() &&
-      currentDate.getMonth() === selectedDate.getMonth() &&
-      currentDate.getFullYear() === selectedDate.getFullYear()
-    )
-  }
-
-  const hasEvent = (date: number) => {
-    // Mock data - replace with actual event data
-    const eventDates = [5, 12, 15, 20, 25]
-    return eventDates.includes(date)
-  }
+  const [startDate, setStartDate] = useState<Date>()
+  const [endDate, setEndDate] = useState<Date>()
+  const [showNewScheduleDialog, setShowNewScheduleDialog] = useState(false)
+  const [selectedAuditPlan, setSelectedAuditPlan] = useState<string>("")
 
   return (
     <div className="flex min-h-screen bg-slate-50">
       <InternalAuditorSidebar />
       <div className="flex-1 flex flex-col">
         <main className="flex-1 p-6">
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center justify-between mb-6">
             <div>
               <h1 className="text-3xl font-bold tracking-tight">Audit Schedule</h1>
-              <p className="text-muted-foreground mt-1">Manage and track all scheduled audits</p>
-            </div>
-            <div className="flex items-center gap-3">
-              <Select defaultValue="all">
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Filter by status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="scheduled">Scheduled</SelectItem>
-                  <SelectItem value="planning">Planning</SelectItem>
-                  <SelectItem value="draft">Draft</SelectItem>
-                </SelectContent>
-              </Select>
-              <Button variant="outline" size="sm" className="gap-2">
-                <Filter className="h-4 w-4" />
-                Filter
-              </Button>
-              <Button variant="outline" size="sm" className="gap-2">
-                <Download className="h-4 w-4" />
-                Export
-              </Button>
-              <Button size="sm" className="gap-2">
-                <Plus className="h-4 w-4" />
-                Schedule Audit
-              </Button>
+              <p className="text-muted-foreground">Manage and schedule your audits</p>
             </div>
           </div>
 
-          <Tabs defaultValue="calendar" className="w-full">
-            <TabsList className="mb-6 bg-white p-1">
-              <TabsTrigger value="calendar" className="data-[state=active]:bg-slate-100">Calendar View</TabsTrigger>
-              <TabsTrigger value="list" className="data-[state=active]:bg-slate-100">List View</TabsTrigger>
-            </TabsList>
-            <TabsContent value="calendar" className="space-y-4">
-              <Card className="border-none shadow-sm">
-                <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center text-xl">
-                    <CalendarDays className="h-5 w-5 mr-2 text-blue-600" />
-                    Audit Calendar
-                  </CardTitle>
-                  <CardDescription>View and manage scheduled audits in a calendar format</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-col md:flex-row gap-8">
-                    <div className="md:w-2/3">
-                      <div className="bg-white rounded-xl border p-6 shadow-sm">
-                        <div className="flex items-center justify-between mb-6">
-                          <h2 className="text-xl font-semibold text-slate-900">
-                            {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
-                          </h2>
-                          <div className="flex items-center gap-2">
-                            <Button
-                              variant="outline"
-                              size="icon"
-                              className="h-8 w-8"
-                              onClick={handlePrevMonth}
-                            >
-                              <ChevronLeft className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="icon"
-                              className="h-8 w-8"
-                              onClick={handleNextMonth}
-                            >
-                              <ChevronRight className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </div>
-                        <div className="grid grid-cols-7 gap-1">
-                          {weekDays.map((day) => (
-                            <div
-                              key={day}
-                              className="text-center text-sm font-medium text-slate-500 py-2"
-                            >
-                              {day}
-                            </div>
-                          ))}
-                          {Array.from({ length: firstDayOfMonth }).map((_, index) => (
-                            <div key={`empty-${index}`} className="h-24" />
-                          ))}
-                          {Array.from({ length: daysInMonth }).map((_, index) => {
-                            const date = index + 1
-                            return (
-                              <div
-                                key={date}
-                                onClick={() => setSelectedDate(new Date(currentDate.getFullYear(), currentDate.getMonth(), date))}
-                                className={`
-                                  relative h-24 p-2 border rounded-lg cursor-pointer transition-colors
-                                  ${isToday(date) ? 'bg-blue-50 border-blue-200' : 'hover:bg-slate-50'}
-                                  ${isSelected(date) ? 'bg-blue-100 border-blue-300' : ''}
-                                `}
-                              >
-                                <span className={`
-                                  text-sm font-medium
-                                  ${isToday(date) ? 'text-blue-600' : 'text-slate-900'}
-                                  ${isSelected(date) ? 'text-blue-700' : ''}
-                                `}>
-                                  {date}
-                                </span>
-                                {hasEvent(date) && (
-                                  <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
-                                  </div>
-                                )}
-                              </div>
-                            )
-                          })}
+          {/* Existing Audit Schedules */}
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle>Existing Audit Schedules</CardTitle>
+              <CardDescription>View and manage your scheduled audits</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {[
+                  {
+                    id: 1,
+                    name: "Annual Financial Compliance Audit 2025",
+                    date: "May 15, 2025 - June 30, 2025",
+                    type: "Compliance",
+                    status: "Committed",
+                  },
+                  {
+                    id: 2,
+                    name: "IT Security Assessment Q2 2025",
+                    date: "June 1, 2025 - June 15, 2025",
+                    type: "Security",
+                    status: "Draft",
+                  },
+                ].map((schedule) => (
+                  <div key={schedule.id} className="flex items-center justify-between p-4 border rounded-md">
+                    <div className="flex items-start space-x-4">
+                      <Calendar className="h-10 w-10 text-primary" />
+                      <div>
+                        <h3 className="font-medium">{schedule.name}</h3>
+                        <div className="text-sm text-muted-foreground">
+                          <span className="inline-flex items-center mr-4">
+                            <CalendarDays className="h-3 w-3 mr-1" />
+                            {schedule.date}
+                          </span>
+                          <span>{schedule.type}</span>
                         </div>
                       </div>
                     </div>
-                    <div className="md:w-1/3">
-                      <div className="bg-white rounded-lg border p-4 shadow-sm">
-                        <h3 className="font-semibold mb-4 flex items-center">
-                          <Clock className="h-4 w-4 mr-2 text-blue-600" />
-                          Upcoming Audits
-                        </h3>
-                        <div className="space-y-4">
-                          {[
-                            {
-                              title: "Annual Financial Compliance",
-                              date: "May 30, 2025",
-                              status: "Scheduled",
-                              type: "Internal",
-                              time: "09:00 AM",
-                            },
-                            {
-                              title: "IT Security Assessment",
-                              date: "June 15, 2025",
-                              status: "Scheduled",
-                              type: "External",
-                              time: "10:30 AM",
-                            },
-                            {
-                              title: "Operational Process Review",
-                              date: "July 10, 2025",
-                              status: "Planning",
-                              type: "Internal",
-                              time: "02:00 PM",
-                            },
-                          ].map((audit, index) => (
-                            <div key={index} className="p-4 border rounded-lg bg-slate-50 hover:bg-slate-100 transition-colors">
-                              <div className="font-medium text-slate-900">{audit.title}</div>
-                              <div className="text-sm text-slate-500 mb-2 flex items-center">
-                                <CalendarDays className="h-3 w-3 mr-1" />
-                                {audit.date} at {audit.time}
-                              </div>
-                              <div className="flex gap-2">
-                                <Badge 
-                                  variant="outline" 
-                                  className={
-                                    audit.status === "Scheduled" 
-                                      ? "bg-green-50 text-green-700 border-green-200" 
-                                      : "bg-blue-50 text-blue-700 border-blue-200"
-                                  }
-                                >
-                                  {audit.status}
-                                </Badge>
-                                <Badge 
-                                  variant={audit.type === "External" ? "secondary" : "default"}
-                                  className="bg-slate-100"
-                                >
-                                  {audit.type}
-                                </Badge>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-            <TabsContent value="list">
-              <Card className="border-none shadow-sm">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <CardTitle className="text-xl">Scheduled Audits</CardTitle>
-                      <CardDescription>View and manage all scheduled audits in a list format</CardDescription>
-                    </div>
-                    <div className="relative w-64">
-                      <Search className="absolute left-2 top-2.5 h-4 w-4 text-slate-400" />
-                      <Input
-                        type="text"
-                        placeholder="Search audits..."
-                        className="pl-8 h-9 w-full"
-                      />
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="rounded-lg border bg-white">
-                    <div className="grid grid-cols-5 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-600 border-b">
-                      <div>Audit Name</div>
-                      <div>Type</div>
-                      <div>Start Date</div>
-                      <div>End Date</div>
-                      <div>Status</div>
-                    </div>
-                    {[
-                      {
-                        name: "Annual Financial Compliance",
-                        type: "Internal",
-                        startDate: "May 30, 2025",
-                        endDate: "June 15, 2025",
-                        status: "Scheduled",
-                      },
-                      {
-                        name: "IT Security Assessment",
-                        type: "External",
-                        startDate: "June 15, 2025",
-                        endDate: "July 1, 2025",
-                        status: "Scheduled",
-                      },
-                      {
-                        name: "Operational Process Review",
-                        type: "Internal",
-                        startDate: "July 10, 2025",
-                        endDate: "July 25, 2025",
-                        status: "Planning",
-                      },
-                      {
-                        name: "Vendor Compliance Audit",
-                        type: "External",
-                        startDate: "August 5, 2025",
-                        endDate: "August 20, 2025",
-                        status: "Planning",
-                      },
-                      {
-                        name: "HR Policy Compliance",
-                        type: "Internal",
-                        startDate: "September 1, 2025",
-                        endDate: "September 15, 2025",
-                        status: "Draft",
-                      },
-                    ].map((audit, index) => (
-                      <div
-                        key={index}
-                        className="grid grid-cols-5 px-4 py-3 text-sm border-b last:border-b-0 hover:bg-slate-50 transition-colors cursor-pointer group"
+                    <div className="flex items-center space-x-2">
+                      <Badge
+                        variant={schedule.status === "Committed" ? "default" : "secondary"}
+                        className="flex items-center"
                       >
-                        <div className="font-medium text-slate-900 group-hover:text-blue-600 transition-colors">
-                          {audit.name}
+                        {schedule.status}
+                      </Badge>
+                      <Button variant="ghost" size="sm">
+                        View
+                      </Button>
+                      {schedule.status === "Committed" && (
+                        <Button variant="ghost" size="sm">
+                          <Download className="h-4 w-4 mr-2" />
+                          Download
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Dialog open={showNewScheduleDialog} onOpenChange={setShowNewScheduleDialog}>
+                <DialogTrigger asChild>
+                  <Button className="ml-auto">
+                    <Plus className="h-4 w-4 mr-2" />
+                    New Audit Schedule
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[600px]">
+                  <DialogHeader>
+                    <DialogTitle>Create New Audit Schedule</DialogTitle>
+                    <DialogDescription>
+                      Schedule a new audit by selecting an audit plan and providing details
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4 py-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="audit-plan">Audit Plan</Label>
+                      <Select onValueChange={setSelectedAuditPlan}>
+                        <SelectTrigger id="audit-plan">
+                          <SelectValue placeholder="Select audit plan" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="financial">Annual Financial Compliance Audit 2025</SelectItem>
+                          <SelectItem value="security">IT Security Assessment Q2 2025</SelectItem>
+                          <SelectItem value="operational">Operational Process Review 2025</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="location">Location</Label>
+                      <Select>
+                        <SelectTrigger id="location">
+                          <SelectValue placeholder="Select location" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="hq">Headquarters</SelectItem>
+                          <SelectItem value="branch1">Branch Office 1</SelectItem>
+                          <SelectItem value="branch2">Branch Office 2</SelectItem>
+                          <SelectItem value="remote">Remote</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="department">Department</Label>
+                      <Select>
+                        <SelectTrigger id="department">
+                          <SelectValue placeholder="Select department" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="it">IT</SelectItem>
+                          <SelectItem value="finance">Finance</SelectItem>
+                          <SelectItem value="operations">Operations</SelectItem>
+                          <SelectItem value="hr">Human Resources</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="process">Process</Label>
+                      <Select>
+                        <SelectTrigger id="process">
+                          <SelectValue placeholder="Select process" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="access">Access Management</SelectItem>
+                          <SelectItem value="reporting">Financial Reporting</SelectItem>
+                          <SelectItem value="development">Software Development</SelectItem>
+                          <SelectItem value="security">Security Operations</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Audit Period</Label>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="start-date" className="text-xs text-muted-foreground mb-1 block">Start Date</Label>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant={"outline"}
+                                className="w-full justify-start text-left font-normal"
+                              >
+                                <Calendar className="mr-2 h-4 w-4" />
+                                {startDate ? format(startDate, "PPP") : <span>Select date</span>}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0">
+                              <CalendarComponent
+                                mode="single"
+                                selected={startDate}
+                                onSelect={setStartDate}
+                                initialFocus
+                                classNames={{
+                                  table: "w-full border-collapse space-y-1",
+                                  head_row: "grid grid-cols-7 gap-0",
+                                  head_cell: "text-muted-foreground text-center text-xs font-medium h-9 w-9 flex items-center justify-center",
+                                  row: "grid grid-cols-7 gap-0",
+                                  cell: "h-9 w-9 text-center text-sm p-0 relative flex items-center justify-center",
+                                  day: "h-8 w-8 p-0 font-normal aria-selected:opacity-100 hover:bg-primary/10 rounded-full"
+                                }}
+                              />
+                            </PopoverContent>
+                          </Popover>
                         </div>
                         <div>
-                          <Badge 
-                            variant={audit.type === "External" ? "secondary" : "default"}
-                            className="bg-slate-100"
-                          >
-                            {audit.type}
-                          </Badge>
-                        </div>
-                        <div className="text-slate-600">{audit.startDate}</div>
-                        <div className="text-slate-600">{audit.endDate}</div>
-                        <div>
-                          <Badge
-                            variant="outline"
-                            className={
-                              audit.status === "Scheduled"
-                                ? "bg-green-50 text-green-700 border-green-200"
-                                : audit.status === "Planning"
-                                  ? "bg-blue-50 text-blue-700 border-blue-200"
-                                  : "bg-slate-50 text-slate-700 border-slate-200"
-                            }
-                          >
-                            {audit.status}
-                          </Badge>
+                          <Label htmlFor="end-date" className="text-xs text-muted-foreground mb-1 block">End Date</Label>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant={"outline"}
+                                className="w-full justify-start text-left font-normal"
+                              >
+                                <Calendar className="mr-2 h-4 w-4" />
+                                {endDate ? format(endDate, "PPP") : <span>Select date</span>}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0">
+                              <CalendarComponent
+                                mode="single"
+                                selected={endDate}
+                                onSelect={setEndDate}
+                                initialFocus
+                                classNames={{
+                                  table: "w-full border-collapse space-y-1",
+                                  head_row: "grid grid-cols-7 gap-0",
+                                  head_cell: "text-muted-foreground text-center text-xs font-medium h-9 w-9 flex items-center justify-center",
+                                  row: "grid grid-cols-7 gap-0",
+                                  cell: "h-9 w-9 text-center text-sm p-0 relative flex items-center justify-center",
+                                  day: "h-8 w-8 p-0 font-normal aria-selected:opacity-100 hover:bg-primary/10 rounded-full"
+                                }}
+                              />
+                            </PopoverContent>
+                          </Popover>
                         </div>
                       </div>
-                    ))}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="auditee">Auditee</Label>
+                      <div className="flex gap-2">
+                        <Select>
+                          <SelectTrigger id="auditee">
+                            <SelectValue placeholder="Select auditee" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="john">John Smith</SelectItem>
+                            <SelectItem value="sarah">Sarah Johnson</SelectItem>
+                            <SelectItem value="michael">Michael Chen</SelectItem>
+                            <SelectItem value="emma">Emma Wilson</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Button variant="outline" size="icon">
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="auditor">Auditor</Label>
+                      <div className="flex gap-2">
+                        <Select>
+                          <SelectTrigger id="auditor">
+                            <SelectValue placeholder="Select auditor" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="david">David Miller - Lead Auditor</SelectItem>
+                            <SelectItem value="lisa">Lisa Garcia - IT Auditor</SelectItem>
+                            <SelectItem value="robert">Robert Lee - Financial Auditor</SelectItem>
+                            <SelectItem value="maria">Maria Rodriguez - Compliance Auditor</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Button variant="outline" size="icon">
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
                   </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button variant="outline">Cancel</Button>
+                    </DialogClose>
+                    <div className="flex gap-2">
+                      <Button variant="outline">Save as Draft</Button>
+                      <Button type="submit">Save & Commit</Button>
+                    </div>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </CardFooter>
+          </Card>
         </main>
       </div>
     </div>
