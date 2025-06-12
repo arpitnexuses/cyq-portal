@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Search, Filter, Download, Clock, CheckCircle, AlertTriangle, MessageSquare, FileText } from "lucide-react"
+import Link from "next/link"
 
 export default function ViewRequestPage() {
   return (
@@ -16,9 +17,11 @@ export default function ViewRequestPage() {
             <Download className="h-4 w-4 mr-2" />
             Export
           </Button>
-          <Button>
-            <MessageSquare className="h-4 w-4 mr-2" />
-            New Request
+          <Button asChild>
+            <Link href="/dashboard/internal-auditor/requests/create">
+              <MessageSquare className="h-4 w-4 mr-2" />
+              New Request
+            </Link>
           </Button>
         </div>
       </div>
@@ -148,7 +151,11 @@ export default function ViewRequestPage() {
             <CardContent>
               <div className="text-center py-8 text-muted-foreground">
                 <p>You have not submitted any requests yet.</p>
-                <Button className="mt-4">Create New Request</Button>
+                <Button className="mt-4" asChild>
+                  <Link href="/dashboard/internal-auditor/requests/create">
+                    Create New Request
+                  </Link>
+                </Button>
               </div>
             </CardContent>
           </Card>

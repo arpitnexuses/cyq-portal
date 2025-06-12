@@ -5,13 +5,16 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Upload, Paperclip, Send } from "lucide-react"
+import Link from "next/link"
 
 export default function CreateRequestPage() {
   return (
     <>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold tracking-tight">Create Request</h1>
-        <Button variant="outline">Cancel</Button>
+        <Button variant="outline" asChild>
+          <Link href="/dashboard/internal-auditor/requests/view">Cancel</Link>
+        </Button>
       </div>
 
       <Card>
@@ -112,10 +115,14 @@ export default function CreateRequestPage() {
           </div>
         </CardContent>
         <CardFooter className="flex justify-between">
-          <Button variant="outline">Save as Draft</Button>
-          <Button>
-            <Send className="h-4 w-4 mr-2" />
-            Submit Request
+          <Button variant="outline" asChild>
+            <Link href="/dashboard/internal-auditor/requests/view">Save as Draft</Link>
+          </Button>
+          <Button asChild>
+            <Link href="/dashboard/internal-auditor/requests/view">
+              <Send className="h-4 w-4 mr-2" />
+              Submit Request
+            </Link>
           </Button>
         </CardFooter>
       </Card>

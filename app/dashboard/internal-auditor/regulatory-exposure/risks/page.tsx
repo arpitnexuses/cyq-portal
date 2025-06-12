@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
-import { Search, Filter, Download, Plus } from "lucide-react"
+import { Search, Filter, Download, Plus, ChevronRight } from "lucide-react"
 
 export default function RisksPage() {
   return (
@@ -15,7 +15,7 @@ export default function RisksPage() {
         <main className="flex-1 p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-3xl font-bold tracking-tight">Risks</h1>
+              <h1 className="text-3xl font-bold tracking-tight">Risk Exposure</h1>
               <p className="text-muted-foreground">Identify and manage regulatory risks</p>
             </div>
             <div className="flex items-center gap-4">
@@ -61,38 +61,52 @@ export default function RisksPage() {
                       {[
                         {
                           id: 1,
-                          title: "Data breach",
+                          title: "Data Breach",
                           category: "Information Security",
                           level: "High",
                           mitigation: 35,
                         },
                         {
                           id: 2,
-                          title: "Non-compliance",
+                          title: "Regulatory",
                           category: "Compliance",
                           level: "High",
                           mitigation: 60,
                         },
                         {
                           id: 3,
-                          title: "Business continuity",
+                          title: "Business Continuity",
                           category: "Operational",
                           level: "Medium",
                           mitigation: 45,
                         },
                         {
                           id: 4,
-                          title: "Vendor security",
+                          title: "Supply Chain",
                           category: "Third Party",
                           level: "Medium",
                           mitigation: 30,
                         },
                         {
                           id: 5,
-                          title: "Security awareness",
+                          title: "Cyber (People)",
                           category: "People",
                           level: "Medium",
                           mitigation: 50,
+                        },
+                        {
+                          id: 6,
+                          title: "Cyber (Process)",
+                          category: "Process",
+                          level: "Medium",
+                          mitigation: 40,
+                        },
+                        {
+                          id: 7,
+                          title: "Cyber (Technology)",
+                          category: "Technology",
+                          level: "High",
+                          mitigation: 25,
                         },
                       ].map((risk) => (
                         <div key={risk.id} className="flex flex-col items-center flex-1">
@@ -125,15 +139,88 @@ export default function RisksPage() {
                     </div>
                   </div>
 
+                  {/* Risk Categories */}
+                  <div className="mb-8">
+                    <h3 className="text-sm font-medium mb-4">Risk Categories</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {[
+                        {
+                          id: 1,
+                          title: "Regulatory Risks",
+                          count: 12,
+                          description: "Risks related to regulatory compliance and legal requirements"
+                        },
+                        {
+                          id: 2,
+                          title: "Compliance Risks",
+                          count: 8,
+                          description: "Risks related to internal policy compliance"
+                        },
+                        {
+                          id: 3,
+                          title: "Cyber Risks (People)",
+                          count: 7,
+                          description: "Human-factor cybersecurity risks"
+                        },
+                        {
+                          id: 4,
+                          title: "Cyber Risks (Process)",
+                          count: 9,
+                          description: "Process-related cybersecurity risks"
+                        },
+                        {
+                          id: 5,
+                          title: "Cyber Risks (Technology)",
+                          count: 15,
+                          description: "Technology-related cybersecurity risks"
+                        },
+                        {
+                          id: 6,
+                          title: "Business Continuity",
+                          count: 6,
+                          description: "Risks related to business continuity and disaster recovery"
+                        },
+                        {
+                          id: 7,
+                          title: "Data Breach",
+                          count: 11,
+                          description: "Risks related to unauthorized data access or exposure"
+                        },
+                        {
+                          id: 8,
+                          title: "Supply Chain",
+                          count: 5,
+                          description: "Risks related to third-party vendors and supply chain"
+                        },
+                      ].map((category) => (
+                        <Card key={category.id} className="hover:bg-slate-100 cursor-pointer">
+                          <CardContent className="p-4">
+                            <div className="flex justify-between items-center">
+                              <div>
+                                <h4 className="font-medium">{category.title}</h4>
+                                <p className="text-sm text-muted-foreground">{category.description}</p>
+                              </div>
+                              <div className="flex items-center">
+                                <Badge>{category.count}</Badge>
+                                <ChevronRight className="h-4 w-4 ml-2" />
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Individual Risks Drill Down */}
                   <div className="space-y-6">
+                    <h3 className="text-sm font-medium mb-4">Individual Risks Drill Down</h3>
                     {[
                       {
                         id: 1,
                         title: "Data breach due to inadequate access controls",
                         description: "Risk of unauthorized access to sensitive data due to weak access controls",
-                        category: "Information Security",
+                        category: "Data Breach",
                         level: "High",
-                        impact: "Severe",
                         likelihood: "Medium",
                         mitigation: 35,
                       },
@@ -141,9 +228,8 @@ export default function RisksPage() {
                         id: 2,
                         title: "Non-compliance with data protection regulations",
                         description: "Risk of regulatory penalties due to non-compliance with data protection laws",
-                        category: "Compliance",
+                        category: "Regulatory Risks",
                         level: "High",
-                        impact: "Severe",
                         likelihood: "Medium",
                         mitigation: 60,
                       },
@@ -151,9 +237,8 @@ export default function RisksPage() {
                         id: 3,
                         title: "Inadequate business continuity planning",
                         description: "Risk of operational disruption due to insufficient disaster recovery procedures",
-                        category: "Operational",
+                        category: "Business Continuity",
                         level: "Medium",
-                        impact: "Moderate",
                         likelihood: "Medium",
                         mitigation: 45,
                       },
@@ -161,9 +246,8 @@ export default function RisksPage() {
                         id: 4,
                         title: "Vendor security vulnerabilities",
                         description: "Risk of security breaches through third-party vendor systems",
-                        category: "Third Party",
+                        category: "Supply Chain",
                         level: "Medium",
-                        impact: "Moderate",
                         likelihood: "Medium",
                         mitigation: 30,
                       },
@@ -171,9 +255,8 @@ export default function RisksPage() {
                         id: 5,
                         title: "Inadequate security awareness among employees",
                         description: "Risk of security incidents due to lack of employee security awareness",
-                        category: "People",
+                        category: "Cyber Risks (People)",
                         level: "Medium",
-                        impact: "Moderate",
                         likelihood: "High",
                         mitigation: 50,
                       },
@@ -194,14 +277,10 @@ export default function RisksPage() {
                           </Badge>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                           <div>
                             <p className="text-sm font-medium">Category</p>
                             <p className="text-sm">{risk.category}</p>
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium">Impact</p>
-                            <p className="text-sm">{risk.impact}</p>
                           </div>
                           <div>
                             <p className="text-sm font-medium">Likelihood</p>

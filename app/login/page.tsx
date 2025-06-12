@@ -5,7 +5,7 @@ import type React from "react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
-import { Loader2, Eye, EyeOff } from "lucide-react"
+import { Loader2, Eye, EyeOff, ShieldCheck } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 export default function LoginPage() {
@@ -13,6 +13,10 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [userRole, setUserRole] = useState("internal-auditor")
   const [showPassword, setShowPassword] = useState(false)
+  const [isFirstTimeLogin, setIsFirstTimeLogin] = useState(false)
+  const [newPassword, setNewPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [passwordChanged, setPasswordChanged] = useState(false)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -21,14 +25,157 @@ export default function LoginPage() {
     // Simulate login process
     setTimeout(() => {
       setIsLoading(false)
+      
+      // Check if it's first time login (simulated)
+      if (Math.random() > 0.7 && !isFirstTimeLogin && !passwordChanged) {
+        setIsFirstTimeLogin(true)
+        return
+      }
+      
       if (userRole === "internal-auditor") {
         router.push("/dashboard/internal-auditor")
+      } else if (userRole === "executive") {
+        router.push("/dashboard/management")
       } else {
         router.push("/dashboard/internal-auditor") // Default to internal auditor for now
       }
     }, 1500)
   }
 
+  const handlePasswordChange = (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsLoading(true)
+    
+    // Simulate password change
+    setTimeout(() => {
+      setIsLoading(false)
+      setPasswordChanged(true)
+      setIsFirstTimeLogin(false)
+    }, 1500)
+  }
+
+  // First-time login password change screen
+  if (isFirstTimeLogin) {
+    return (
+      <div className="min-h-screen w-full flex items-center justify-center bg-cyan p-4 md:p-8">
+        <div className="w-full max-w-md overflow-hidden rounded-3xl shadow-2xl bg-white p-8">
+          <div className="text-center mb-8">
+            <ShieldCheck className="h-12 w-12 mx-auto mb-4 text-primary" />
+            <h2 className="text-3xl font-bold mb-2">Change Your Password</h2>
+            <p className="text-gray-500">For security reasons, please change your password before proceeding.</p>
+          </div>
+
+          <form onSubmit={handlePasswordChange} className="space-y-6">
+            <div className="space-y-2">
+              <label htmlFor="new-password" className="block text-sm font-medium text-gray-700">
+                New Password
+              </label>
+              <div className="relative">
+                <input
+                  id="new-password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter new password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  required
+                  className="w-full h-12 px-4 rounded-lg border border-gray-300 focus:ring-2 focus:ring-black focus:border-black focus:outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700">
+                Confirm Password
+              </label>
+              <div className="relative">
+                <input
+                  id="confirm-password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Confirm new password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  className="w-full h-12 px-4 rounded-lg border border-gray-300 focus:ring-2 focus:ring-black focus:border-black focus:outline-none"
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full h-12 bg-black text-white rounded-lg font-medium hover:bg-gray-900 transition-colors"
+              disabled={isLoading || newPassword !== confirmPassword || newPassword.length < 8}
+            >
+              {isLoading ? (
+                <div className="flex items-center justify-center">
+                  <Loader2 className="animate-spin mr-2 h-4 w-4" />
+                  <span>Updating Password...</span>
+                </div>
+              ) : (
+                "Change Password"
+              )}
+            </button>
+          </form>
+        </div>
+      </div>
+    )
+  }
+
+  // Welcome screen after password change
+  if (passwordChanged) {
+    return (
+      <div className="min-h-screen w-full flex items-center justify-center bg-cyan p-4 md:p-8">
+        <div className="w-full max-w-md overflow-hidden rounded-3xl shadow-2xl bg-white p-8">
+          <div className="text-center mb-8">
+            <div className="bg-green-100 text-green-700 p-4 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h2 className="text-3xl font-bold mb-2">Welcome to CYQ Audit Portal</h2>
+            <p className="text-gray-600 mb-6">Your password has been updated successfully.</p>
+            
+            <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 mb-6 text-left">
+              <h3 className="font-semibold text-blue-900 mb-2">Purpose of Cybersecurity</h3>
+              <p className="text-blue-800">
+                Our Compliance Journey is designed to ensure the highest standards of security for your data and operations.
+              </p>
+              <div className="mt-3 bg-white p-2 rounded border border-blue-100">
+                <Image
+                  src="https://22527425.fs1.hubspotusercontent-na1.net/hubfs/22527425/compliance_journey.png"
+                  alt="Compliance Journey"
+                  width={400}
+                  height={200}
+                  className="mx-auto rounded"
+                />
+              </div>
+            </div>
+            
+            <button
+              onClick={() => {
+                if (userRole === "executive") {
+                  router.push("/dashboard/management")
+                } else {
+                  router.push("/dashboard/internal-auditor")
+                }
+              }}
+              className="w-full h-12 bg-black text-white rounded-lg font-medium hover:bg-gray-900 transition-colors"
+            >
+              Continue to Dashboard
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Regular login screen
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-cyan p-4 md:p-8">
       <div className="w-full max-w-6xl overflow-hidden rounded-3xl flex flex-col md:flex-row shadow-2xl">
@@ -161,13 +308,7 @@ export default function LoginPage() {
                   "Sign In"
                 )}
               </button>
-
-              
-
-              
             </form>
-
-            
           </div>
         </div>
       </div>

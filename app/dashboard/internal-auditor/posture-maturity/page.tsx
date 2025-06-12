@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
-import { Download, TrendingUp, BarChart3, Calendar, ArrowRight, Shield, Target, AlertTriangle, CheckCircle } from "lucide-react"
+import { Download, TrendingUp, BarChart3, Calendar, ArrowRight, Shield, Target, AlertTriangle, CheckCircle, Database, UserCircle, MonitorSmartphone, Server } from "lucide-react"
 import { Progress } from "@/components/ui/progress"
 
 export default function PostureMaturityPage() {
@@ -79,10 +79,148 @@ export default function PostureMaturityPage() {
           <Tabs defaultValue="overview" className="space-y-6">
             <TabsList className="bg-white p-1 h-12">
               <TabsTrigger value="overview" className="text-base px-6">Overview</TabsTrigger>
+              <TabsTrigger value="blueprint" className="text-base px-6">Blueprint</TabsTrigger>
+              <TabsTrigger value="quotient" className="text-base px-6">Quotient</TabsTrigger>
               <TabsTrigger value="domains" className="text-base px-6">Security Domains</TabsTrigger>
               <TabsTrigger value="trends" className="text-base px-6">Maturity Trends</TabsTrigger>
               <TabsTrigger value="recommendations" className="text-base px-6">Recommendations</TabsTrigger>
             </TabsList>
+            
+            {/* Blueprint Tab */}
+            <TabsContent value="blueprint" className="space-y-6 mt-6">
+              <Card className="border-none shadow-lg">
+                <CardHeader className="bg-white border-b">
+                  <CardTitle className="text-2xl">Blueprint Maturity Assessment</CardTitle>
+                  <CardDescription className="text-base">Maturity assessment across data, identity, application, and infrastructure domains</CardDescription>
+                </CardHeader>
+                <CardContent className="p-6">
+                  <div className="space-y-6">
+                    {[
+                      { 
+                        id: 1, 
+                        name: "Data", 
+                        icon: Database,
+                        level: 3.5, 
+                        target: 4.0,
+                        description: "Data management, protection, and governance capabilities"
+                      },
+                      { 
+                        id: 2, 
+                        name: "Identity", 
+                        icon: UserCircle,
+                        level: 3.8, 
+                        target: 4.0,
+                        description: "Identity management, authentication, and access control"
+                      },
+                      { 
+                        id: 3, 
+                        name: "Application", 
+                        icon: MonitorSmartphone,
+                        level: 3.1, 
+                        target: 4.0,
+                        description: "Application security, development, and maintenance"
+                      },
+                      { 
+                        id: 4, 
+                        name: "Infrastructure", 
+                        icon: Server,
+                        level: 3.4, 
+                        target: 4.0,
+                        description: "Infrastructure security, resilience, and management"
+                      },
+                    ].map((domain) => (
+                      <div key={domain.id} className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow duration-200">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center gap-3">
+                            <domain.icon className="h-8 w-8 text-primary" />
+                            <div>
+                              <h3 className="font-medium text-lg">{domain.name}</h3>
+                              <p className="text-sm text-muted-foreground">{domain.description}</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <Badge variant="outline" className="px-3 py-1">
+                              Level {domain.level}
+                            </Badge>
+                            <Badge variant="secondary" className="px-3 py-1">
+                              Target {domain.target}
+                            </Badge>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3 mt-4">
+                          <div className="h-2 flex-1 rounded-full bg-gradient-to-r from-blue-100 to-blue-50">
+                            <div
+                              className="h-full rounded-full bg-gradient-to-r from-blue-500 to-blue-600 transition-all duration-500"
+                              style={{ width: `${(domain.level / 5) * 100}%` }}
+                            />
+                          </div>
+                          <span className="text-sm font-medium min-w-[3rem] text-right text-blue-600">
+                            {((domain.level / 5) * 100).toFixed(0)}%
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            {/* Quotient Tab */}
+            <TabsContent value="quotient" className="space-y-6 mt-6">
+              <Card className="border-none shadow-lg">
+                <CardHeader className="bg-white border-b">
+                  <CardTitle className="text-2xl">Security Quotient Assessment</CardTitle>
+                  <CardDescription className="text-base">Quantitative measurement of security posture effectiveness</CardDescription>
+                </CardHeader>
+                <CardContent className="p-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div className="bg-white rounded-lg p-6 shadow-sm border border-blue-100">
+                      <h3 className="text-xl font-semibold text-blue-800 mb-2">Security Quotient Score</h3>
+                      <div className="flex items-end gap-2">
+                        <span className="text-5xl font-bold text-blue-600">78</span>
+                        <span className="text-xl font-medium text-blue-400 mb-1">/100</span>
+                      </div>
+                      <p className="text-sm text-blue-700 mt-2">Overall security effectiveness score based on current controls and capabilities</p>
+                    </div>
+                    
+                    <div className="bg-white rounded-lg p-6 shadow-sm border border-green-100">
+                      <h3 className="text-xl font-semibold text-green-800 mb-2">Industry Benchmark</h3>
+                      <div className="flex items-end gap-2">
+                        <span className="text-5xl font-bold text-green-600">72</span>
+                        <span className="text-xl font-medium text-green-400 mb-1">/100</span>
+                      </div>
+                      <p className="text-sm text-green-700 mt-2">Average security quotient score for your industry</p>
+                    </div>
+                  </div>
+                  
+                  <h3 className="text-lg font-medium mb-4">Quotient Components</h3>
+                  <div className="space-y-4">
+                    {[
+                      { name: "Control Effectiveness", score: 82, description: "Effectiveness of security controls in place" },
+                      { name: "Risk Exposure", score: 74, description: "Measurement of current risk exposure levels" },
+                      { name: "Threat Detection", score: 68, description: "Capability to detect security threats" },
+                      { name: "Response Readiness", score: 79, description: "Readiness to respond to security incidents" },
+                      { name: "Compliance Coverage", score: 85, description: "Coverage of applicable compliance requirements" },
+                    ].map((component, index) => (
+                      <div key={index} className="bg-white rounded-lg border p-4">
+                        <div className="flex justify-between items-center mb-2">
+                          <h4 className="font-medium">{component.name}</h4>
+                          <span className="text-sm font-bold">{component.score}/100</span>
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-2">{component.description}</p>
+                        <div className="h-2 w-full bg-slate-100 rounded-full">
+                          <div 
+                            className="h-full rounded-full bg-gradient-to-r from-blue-500 to-indigo-600"
+                            style={{ width: `${component.score}%` }}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
             <TabsContent value="overview" className="space-y-6 mt-6">
               <Card className="border-none shadow-lg">
                 <CardHeader className="bg-white border-b">
@@ -133,6 +271,7 @@ export default function PostureMaturityPage() {
                 </CardContent>
               </Card>
             </TabsContent>
+            
             <TabsContent value="domains" className="space-y-6 mt-6">
               <Card className="border-none shadow-lg">
                 <CardHeader className="bg-white border-b">
@@ -217,6 +356,7 @@ export default function PostureMaturityPage() {
                 </CardContent>
               </Card>
             </TabsContent>
+            
             <TabsContent value="trends" className="mt-6">
               <Card className="border-none shadow-lg">
                 <CardHeader className="bg-white border-b">
@@ -233,6 +373,7 @@ export default function PostureMaturityPage() {
                 </CardContent>
               </Card>
             </TabsContent>
+            
             <TabsContent value="recommendations" className="mt-6">
               <Card className="border-none shadow-lg">
                 <CardHeader className="bg-white border-b">
@@ -248,46 +389,95 @@ export default function PostureMaturityPage() {
                         recommendation: "Implement automated vendor risk assessment process",
                         impact: "High",
                         effort: "Medium",
-                        timeline: "Q3 2025",
+                        priority: "Critical",
                       },
                       {
                         id: 2,
-                        domain: "Data Protection",
-                        recommendation: "Deploy data loss prevention (DLP) solution",
+                        domain: "Security Operations",
+                        recommendation: "Enhance SIEM correlation rules for better threat detection",
                         impact: "High",
-                        effort: "High",
-                        timeline: "Q4 2025",
+                        effort: "Medium",
+                        priority: "High",
                       },
                       {
                         id: 3,
-                        domain: "Security Operations",
-                        recommendation: "Enhance security monitoring capabilities",
+                        domain: "Data Protection",
+                        recommendation: "Deploy data loss prevention solution for cloud services",
+                        impact: "Medium",
+                        effort: "High",
+                        priority: "Medium",
+                      },
+                      {
+                        id: 4,
+                        domain: "Identity & Access Management",
+                        recommendation: "Implement JIT/JEA for privileged access",
                         impact: "Medium",
                         effort: "Medium",
-                        timeline: "Q3 2025",
+                        priority: "Medium",
                       },
-                    ].map((item) => (
-                      <div key={item.id} className="bg-white rounded-lg p-6 hover:shadow-md transition-shadow duration-200">
-                        <div className="flex items-start justify-between">
-                          <div className="space-y-1">
-                            <div className="font-medium text-lg">{item.recommendation}</div>
-                            <div className="text-sm text-muted-foreground">Domain: {item.domain}</div>
-                            <div className="flex items-center gap-4 mt-2">
-                              <Badge variant="outline" className="px-3 py-1">
-                                Impact: {item.impact}
+                      {
+                        id: 5,
+                        domain: "Business Continuity",
+                        recommendation: "Increase frequency of DR testing",
+                        impact: "Medium",
+                        effort: "Low",
+                        priority: "Medium",
+                      },
+                    ].map((rec) => (
+                      <div key={rec.id} className="bg-white rounded-lg p-4 hover:shadow-md transition-shadow duration-200 border">
+                        <div className="flex flex-col md:flex-row md:items-center justify-between">
+                          <div>
+                            <div className="flex items-center gap-2 mb-1">
+                              <Badge variant="outline" className="text-xs">
+                                {rec.domain}
                               </Badge>
-                              <Badge variant="outline" className="px-3 py-1">
-                                Effort: {item.effort}
+                              <Badge
+                                variant={
+                                  rec.priority === "Critical"
+                                    ? "destructive"
+                                    : rec.priority === "High"
+                                      ? "default"
+                                      : "secondary"
+                                }
+                                className="text-xs"
+                              >
+                                {rec.priority}
                               </Badge>
-                              <div className="flex items-center text-sm text-muted-foreground">
-                                <Calendar className="h-4 w-4 mr-2" />
-                                {item.timeline}
+                            </div>
+                            <p className="font-medium">{rec.recommendation}</p>
+                            <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
+                              <div className="flex items-center gap-1">
+                                <span>Impact:</span>
+                                <span
+                                  className={
+                                    rec.impact === "High"
+                                      ? "text-blue-600 font-medium"
+                                      : rec.impact === "Medium"
+                                        ? "text-blue-500 font-medium"
+                                        : "text-blue-400 font-medium"
+                                  }
+                                >
+                                  {rec.impact}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <span>Effort:</span>
+                                <span
+                                  className={
+                                    rec.effort === "Low"
+                                      ? "text-green-600 font-medium"
+                                      : rec.effort === "Medium"
+                                        ? "text-amber-600 font-medium"
+                                        : "text-red-600 font-medium"
+                                  }
+                                >
+                                  {rec.effort}
+                                </span>
                               </div>
                             </div>
                           </div>
-                          <Button variant="ghost" size="sm" className="gap-2">
-                            Details
-                            <ArrowRight className="h-4 w-4" />
+                          <Button variant="outline" size="sm" className="mt-4 md:mt-0 whitespace-nowrap">
+                            View Details
                           </Button>
                         </div>
                       </div>

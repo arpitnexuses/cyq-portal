@@ -1,232 +1,311 @@
-import { InternalAuditorSidebar } from "@/components/internal-auditor-sidebar"
+import { ComplianceMaturityRadarChart } from "@/components/radar-chart"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
-import { Download, CheckCircle, XCircle, AlertCircle } from "lucide-react"
+import { Download, CheckCircle, XCircle, AlertCircle, FileText, Filter, ArrowUpDown } from "lucide-react"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 
-export default function CISPage() {
+export default function CISAuditorPage() {
+  // Radar chart data for CIS domains
+  const radarData = [
+    { subject: "Basic CIS Controls", score: 85, fullMark: 100 },
+    { subject: "Foundational CIS Controls", score: 70, fullMark: 100 },
+    { subject: "Organizational CIS Controls", score: 62, fullMark: 100 },
+  ]
+
   return (
-    <div className="flex min-h-screen bg-slate-50">
-      <InternalAuditorSidebar />
-      <div className="flex-1 flex flex-col">
-        <main className="flex-1 p-6">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight">CIS Controls</h1>
-              <p className="text-muted-foreground">Center for Internet Security Controls compliance</p>
-            </div>
-            <div className="flex items-center gap-4">
-              <Button variant="outline">
-                <Download className="h-4 w-4 mr-2" />
-                Export Report
-              </Button>
-              <Button>View Assessment History</Button>
-            </div>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">CIS Controls</h1>
+          <p className="text-muted-foreground">Center for Internet Security Controls compliance</p>
+        </div>
+        <div className="flex items-center gap-4">
+          <Button variant="outline">
+            <Download className="h-4 w-4 mr-2" />
+            Export Report
+          </Button>
+          <Button>View Assessment History</Button>
+        </div>
+      </div>
+
+      {/* Dashboard Statistics */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Overall Maturity</CardTitle>
+            <div className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">78%</div>
+            <p className="text-xs text-muted-foreground">+3.5% from last assessment</p>
+            <Progress value={78} className="h-2 mt-2" />
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Compliant</CardTitle>
+            <CheckCircle className="h-4 w-4 text-green-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">14</div>
+            <p className="text-xs text-muted-foreground">Controls fully implemented</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Observations</CardTitle>
+            <AlertCircle className="h-4 w-4 text-amber-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">3</div>
+            <p className="text-xs text-muted-foreground">Partial implementation</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Non-Conformance</CardTitle>
+            <XCircle className="h-4 w-4 text-red-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">1</div>
+            <p className="text-xs text-muted-foreground">Controls not implemented</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Overall Maturity Score */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Overall Maturity Score</CardTitle>
+          <CardDescription>Radar view of CIS security domains</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="h-80">
+            <ComplianceMaturityRadarChart 
+              data={radarData}
+            />
           </div>
+        </CardContent>
+      </Card>
 
-          {/* Overall Compliance Score */}
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle>Overall Compliance Score</CardTitle>
-              <CardDescription>Based on the latest assessment</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium">82% Compliant</span>
-                <span className="text-sm font-medium">Target: 90%</span>
-              </div>
-              <Progress value={82} className="h-3" />
-              <div className="grid grid-cols-3 gap-4 mt-6">
-                <div className="flex flex-col items-center p-4 bg-green-50 rounded-lg">
-                  <CheckCircle className="h-8 w-8 text-green-500 mb-2" />
-                  <span className="text-xl font-bold">14</span>
-                  <span className="text-sm text-muted-foreground">Controls Compliant</span>
-                </div>
-                <div className="flex flex-col items-center p-4 bg-amber-50 rounded-lg">
-                  <AlertCircle className="h-8 w-8 text-amber-500 mb-2" />
-                  <span className="text-xl font-bold">3</span>
-                  <span className="text-sm text-muted-foreground">Partially Compliant</span>
-                </div>
-                <div className="flex flex-col items-center p-4 bg-red-50 rounded-lg">
-                  <XCircle className="h-8 w-8 text-red-500 mb-2" />
-                  <span className="text-xl font-bold">1</span>
-                  <span className="text-sm text-muted-foreground">Non-Compliant</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Tabs defaultValue="implementation">
+      {/* Findings Tabs */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Overall Findings</CardTitle>
+          <CardDescription>Audit Plan and Count of Findings</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Tabs defaultValue="audit-plan">
             <TabsList>
-              <TabsTrigger value="implementation">Implementation Groups</TabsTrigger>
-              <TabsTrigger value="controls">Controls</TabsTrigger>
-              <TabsTrigger value="safeguards">Safeguards</TabsTrigger>
-              <TabsTrigger value="history">Assessment History</TabsTrigger>
+              <TabsTrigger value="audit-plan">Audit Plan</TabsTrigger>
+              <TabsTrigger value="count">Count of Findings</TabsTrigger>
+              <TabsTrigger value="status">Status</TabsTrigger>
             </TabsList>
-            <TabsContent value="implementation" className="space-y-4 mt-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>CIS Implementation Groups</CardTitle>
-                  <CardDescription>Compliance status by implementation group</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {/* Vertical Bar Chart for CIS Implementation Groups */}
-                  <div className="h-80 flex items-end justify-around gap-6 px-4 mb-6">
-                    {[
-                      {
-                        id: 1,
-                        name: "Implementation Group 1 (IG1)",
-                        description: "Basic cyber hygiene - essential cyber defense for all organizations",
-                        compliance: 95,
-                      },
-                      {
-                        id: 2,
-                        name: "Implementation Group 2 (IG2)",
-                        description: "Foundational cyber hygiene - for organizations with more resources and expertise",
-                        compliance: 80,
-                      },
-                      {
-                        id: 3,
-                        name: "Implementation Group 3 (IG3)",
-                        description:
-                          "Organizational cyber hygiene - for organizations with mature cybersecurity programs",
-                        compliance: 65,
-                      },
-                    ].map((group) => (
-                      <div key={group.id} className="flex flex-col items-center" style={{ width: "30%" }}>
-                        <div className="text-sm font-medium mb-1">{group.compliance}%</div>
-                        <div className="w-full flex justify-center">
-                          <div
-                            className={`w-24 rounded-t-md ${
-                              group.compliance < 70
-                                ? "bg-red-500"
-                                : group.compliance < 90
-                                  ? "bg-amber-500"
-                                  : "bg-green-500"
-                            }`}
-                            style={{ height: `${group.compliance * 2}px` }}
-                          ></div>
-                        </div>
-                        <div className="text-xs mt-2 text-center font-medium">IG{group.id}</div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Group descriptions */}
-                  <div className="space-y-4 mt-8 border-t pt-4">
-                    <h3 className="text-sm font-medium">Implementation Group Details</h3>
-                    {[
-                      {
-                        id: 1,
-                        name: "Implementation Group 1 (IG1)",
-                        description: "Basic cyber hygiene - essential cyber defense for all organizations",
-                        compliance: 95,
-                      },
-                      {
-                        id: 2,
-                        name: "Implementation Group 2 (IG2)",
-                        description: "Foundational cyber hygiene - for organizations with more resources and expertise",
-                        compliance: 80,
-                      },
-                      {
-                        id: 3,
-                        name: "Implementation Group 3 (IG3)",
-                        description:
-                          "Organizational cyber hygiene - for organizations with mature cybersecurity programs",
-                        compliance: 65,
-                      },
-                    ].map((group) => (
-                      <div key={group.id} className="border rounded-md p-3">
-                        <div className="flex items-center justify-between mb-1">
-                          <div className="font-medium">{group.name}</div>
-                          <Badge
-                            variant={
-                              group.compliance >= 90 ? "outline" : group.compliance >= 70 ? "secondary" : "destructive"
-                            }
-                          >
-                            {group.compliance}%
-                          </Badge>
-                        </div>
-                        <p className="text-sm text-muted-foreground">{group.description}</p>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+            
+            <TabsContent value="audit-plan" className="space-y-4 mt-4">
+              <div className="rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Audit Date</TableHead>
+                      <TableHead>Scope</TableHead>
+                      <TableHead>Auditor</TableHead>
+                      <TableHead>Status</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell>10 Mar 2023</TableCell>
+                      <TableCell>CIS Controls v8.0 Full Assessment</TableCell>
+                      <TableCell>Internal Audit Team</TableCell>
+                      <TableCell><Badge>Completed</Badge></TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>22 Jun 2023</TableCell>
+                      <TableCell>Basic CIS Controls (IG1)</TableCell>
+                      <TableCell>External Consultant</TableCell>
+                      <TableCell><Badge>Completed</Badge></TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>15 Sep 2023</TableCell>
+                      <TableCell>Foundational CIS Controls (IG2)</TableCell>
+                      <TableCell>Internal Audit Team</TableCell>
+                      <TableCell><Badge>Completed</Badge></TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>05 Jan 2024</TableCell>
+                      <TableCell>Organizational CIS Controls (IG3)</TableCell>
+                      <TableCell>Internal Audit Team</TableCell>
+                      <TableCell><Badge variant="outline">Scheduled</Badge></TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </div>
             </TabsContent>
-            <TabsContent value="controls" className="space-y-4 mt-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>CIS Controls</CardTitle>
-                  <CardDescription>Compliance status by control</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {[
-                      { id: 1, name: "CIS Control 1: Inventory and Control of Enterprise Assets", compliance: 90 },
-                      { id: 2, name: "CIS Control 2: Inventory and Control of Software Assets", compliance: 85 },
-                      { id: 3, name: "CIS Control 3: Data Protection", compliance: 75 },
-                      {
-                        id: 4,
-                        name: "CIS Control 4: Secure Configuration of Enterprise Assets and Software",
-                        compliance: 80,
-                      },
-                      { id: 5, name: "CIS Control 5: Account Management", compliance: 95 },
-                      { id: 6, name: "CIS Control 6: Access Control Management", compliance: 85 },
-                      { id: 7, name: "CIS Control 7: Continuous Vulnerability Management", compliance: 70 },
-                      { id: 8, name: "CIS Control 8: Audit Log Management", compliance: 65 },
-                    ].map((control) => (
-                      <div key={control.id} className="border rounded-md p-3">
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="font-medium">{control.name}</div>
-                          <Badge
-                            variant={
-                              control.compliance >= 85
-                                ? "outline"
-                                : control.compliance >= 70
-                                  ? "secondary"
-                                  : "destructive"
-                            }
-                          >
-                            {control.compliance}%
-                          </Badge>
-                        </div>
-                        <Progress value={control.compliance} className="h-2" />
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+            
+            <TabsContent value="count" className="mt-4">
+              <div className="rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Severity</TableHead>
+                      <TableHead>Total Findings</TableHead>
+                      <TableHead>Open</TableHead>
+                      <TableHead>In Progress</TableHead>
+                      <TableHead>Closed</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell>High</TableCell>
+                      <TableCell>6</TableCell>
+                      <TableCell>2</TableCell>
+                      <TableCell>1</TableCell>
+                      <TableCell>3</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Medium</TableCell>
+                      <TableCell>18</TableCell>
+                      <TableCell>4</TableCell>
+                      <TableCell>6</TableCell>
+                      <TableCell>8</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Low</TableCell>
+                      <TableCell>12</TableCell>
+                      <TableCell>2</TableCell>
+                      <TableCell>2</TableCell>
+                      <TableCell>8</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </div>
             </TabsContent>
-            <TabsContent value="safeguards" className="mt-6">
-              {/* Safeguards content */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>CIS Safeguards</CardTitle>
-                  <CardDescription>Individual safeguard assessment</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p>Safeguards assessment would be displayed here</p>
-                </CardContent>
-              </Card>
-            </TabsContent>
-            <TabsContent value="history" className="mt-6">
-              {/* History content */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Assessment History</CardTitle>
-                  <CardDescription>Historical compliance data</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p>Assessment history would be displayed here</p>
-                </CardContent>
-              </Card>
+            
+            <TabsContent value="status" className="mt-4">
+              <div className="rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Count</TableHead>
+                      <TableHead>Percentage</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell>Open</TableCell>
+                      <TableCell>8</TableCell>
+                      <TableCell>22%</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>In Progress</TableCell>
+                      <TableCell>9</TableCell>
+                      <TableCell>25%</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Closed</TableCell>
+                      <TableCell>19</TableCell>
+                      <TableCell>53%</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </div>
             </TabsContent>
           </Tabs>
-        </main>
-      </div>
+        </CardContent>
+      </Card>
+
+      {/* Findings View */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Findings View</CardTitle>
+              <CardDescription>Details of all audit findings</CardDescription>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm">
+                <Filter className="h-4 w-4 mr-1" /> Filter
+              </Button>
+              <Button variant="outline" size="sm">
+                <ArrowUpDown className="h-4 w-4 mr-1" /> Sort
+              </Button>
+              <Button size="sm">
+                <FileText className="h-4 w-4 mr-1" /> Export
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>ID</TableHead>
+                  <TableHead>Finding</TableHead>
+                  <TableHead>Control/Domain</TableHead>
+                  <TableHead>Severity</TableHead>
+                  <TableHead>Timeline</TableHead>
+                  <TableHead>Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow>
+                  <TableCell>CIS-01</TableCell>
+                  <TableCell>Incomplete hardware asset inventory</TableCell>
+                  <TableCell>Control 1.1</TableCell>
+                  <TableCell><Badge variant="destructive">High</Badge></TableCell>
+                  <TableCell>15 Apr 2024</TableCell>
+                  <TableCell><Badge variant="outline">In Progress</Badge></TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>CIS-02</TableCell>
+                  <TableCell>Inadequate software asset inventory</TableCell>
+                  <TableCell>Control 2.2</TableCell>
+                  <TableCell><Badge variant="destructive">High</Badge></TableCell>
+                  <TableCell>30 Apr 2024</TableCell>
+                  <TableCell><Badge variant="outline">Open</Badge></TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>CIS-03</TableCell>
+                  <TableCell>Missing data protection controls</TableCell>
+                  <TableCell>Control 3.4</TableCell>
+                  <TableCell><Badge>Medium</Badge></TableCell>
+                  <TableCell>10 Mar 2024</TableCell>
+                  <TableCell><Badge variant="secondary">Closed</Badge></TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>CIS-04</TableCell>
+                  <TableCell>Incomplete secure configuration baseline</TableCell>
+                  <TableCell>Control 4.1</TableCell>
+                  <TableCell><Badge>Medium</Badge></TableCell>
+                  <TableCell>25 May 2024</TableCell>
+                  <TableCell><Badge variant="outline">In Progress</Badge></TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>CIS-05</TableCell>
+                  <TableCell>Insufficient account monitoring</TableCell>
+                  <TableCell>Control 5.3</TableCell>
+                  <TableCell><Badge variant="destructive">High</Badge></TableCell>
+                  <TableCell>20 Jun 2024</TableCell>
+                  <TableCell><Badge variant="outline">Open</Badge></TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }
