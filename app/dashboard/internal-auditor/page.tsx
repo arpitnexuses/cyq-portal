@@ -125,7 +125,9 @@ export default function InternalAuditorDashboard() {
                 </svg>
                 
                 {/* Percentage Text */}
-                <div className="text-4xl font-bold">82%</div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="text-4xl font-bold">82%</div>
+                </div>
               </div>
             </div>
           </CardContent>
@@ -301,8 +303,7 @@ export default function InternalAuditorDashboard() {
       </Card>
 
       {/* Audit Status and Scheduled Tasks */}
-      <div className="grid gap-6 md:grid-cols-2 mb-8">
-        {/* Audit Status */}
+      {/* <div className="grid gap-6 md:grid-cols-2 mb-8">
         <Card className="border-0 rounded-lg shadow-md">
           <CardHeader className="pb-4">
             <CardTitle className="text-xl font-semibold">Audit Status</CardTitle>
@@ -376,7 +377,7 @@ export default function InternalAuditorDashboard() {
           </CardContent>
         </Card>
 
-        {/* Scheduled Tasks */}
+
         <Card className="border-0 rounded-lg shadow-md">
           <CardHeader className="pb-4">
             <CardTitle className="text-xl font-semibold">Scheduled Tasks Due in this month</CardTitle>
@@ -426,7 +427,7 @@ export default function InternalAuditorDashboard() {
             </div>
           </CardContent>
         </Card>
-      </div>
+      </div> */}
     </>
   )
 }
