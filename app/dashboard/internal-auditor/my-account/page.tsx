@@ -32,8 +32,9 @@ export default function MyProfilePage() {
         <main className="flex-1 p-6">
           {/* Profile Info Card */}
           <div className="rounded-xl overflow-hidden mb-6 shadow-sm">
-            {/* Gradient Background */}
-            <div className="bg-gradient-to-r from-blue-600/90 via-indigo-500/80 to-purple-600/90 h-40 relative">
+            {/* Gradient Background with blur effect */}
+            <div className="bg-gradient-to-r from-blue-600/90 via-indigo-500/80 to-purple-600/90 h-48 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-400/30 to-purple-600/30 mix-blend-overlay"></div>
               <div className="absolute top-6 right-6 flex items-center gap-2">
                 <div className="h-8 w-8 rounded-full bg-orange-500 flex items-center justify-center text-white font-medium text-sm">26</div>
                 <div className="h-8 w-8 rounded-full bg-indigo-500 flex items-center justify-center text-white font-medium text-sm">6</div>
@@ -45,13 +46,13 @@ export default function MyProfilePage() {
             <div className="bg-white p-6">
               <div className="flex flex-col md:flex-row gap-6">
                 {/* Profile Image - Positioned to overlap with the gradient */}
-                <div className="relative -mt-24">
+                <div className="relative -mt-32">
                   <div className="relative">
-                    <Avatar className="h-48 w-48 rounded-xl border-4 border-white shadow-md">
-                      <AvatarImage src="/abstract-user-avatar.png" alt="User avatar" className="object-cover" />
-                      <AvatarFallback>JD</AvatarFallback>
-                    </Avatar>
-                    <Button size="sm" className="absolute bottom-3 right-3 rounded-full p-2 bg-primary text-white hover:bg-primary/90">
+                    <div className="h-64 w-64 rounded-3xl border-4 border-white shadow-lg overflow-hidden relative">
+                      <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20 mix-blend-overlay"></div>
+                      <img src="https://images.unsplash.com/photo-1639747280804-dd2d6b3d88ac?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Profile photo" className="object-cover w-full h-full" />
+                    </div>
+                    <Button size="sm" className="absolute bottom-4 right-4 rounded-full p-2 bg-primary text-white hover:bg-primary/90 shadow-md">
                       <Edit className="h-4 w-4" />
                     </Button>
                   </div>
